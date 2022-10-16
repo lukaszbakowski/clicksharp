@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickSharp", "ClickSharp\ClickSharp.csproj", "{87F105DE-FBA4-41B1-BF35-43E4342795B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClickSharp", "ClickSharp\ClickSharp.csproj", "{87F105DE-FBA4-41B1-BF35-43E4342795B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickSharp.DataLayer", "ClickSharp.DataLayer\ClickSharp.DataLayer.csproj", "{6280A7A7-FB89-446D-8B39-AACB28F06A24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickSharp.Models", "ClickSharp.Models\ClickSharp.Models.csproj", "{F80E3666-E630-4E63-8D08-9ACA4B0E83EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{87F105DE-FBA4-41B1-BF35-43E4342795B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87F105DE-FBA4-41B1-BF35-43E4342795B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87F105DE-FBA4-41B1-BF35-43E4342795B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6280A7A7-FB89-446D-8B39-AACB28F06A24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6280A7A7-FB89-446D-8B39-AACB28F06A24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6280A7A7-FB89-446D-8B39-AACB28F06A24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6280A7A7-FB89-446D-8B39-AACB28F06A24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F80E3666-E630-4E63-8D08-9ACA4B0E83EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F80E3666-E630-4E63-8D08-9ACA4B0E83EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F80E3666-E630-4E63-8D08-9ACA4B0E83EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F80E3666-E630-4E63-8D08-9ACA4B0E83EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
