@@ -1,0 +1,49 @@
+﻿@using ClickSharp.Services
+@using System.Security.Claims
+@inject AuthenticationStateProvider authenticationStateProvider
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage ProtectedSessionStore
+
+<h3>Auth</h3>
+
+@code {
+    private string? authMessage;
+    private string? surnameMessage;
+    private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
+    protected override async Task OnInitializedAsync()
+    {
+        var Token = await ProtectedSessionStore.GetAsync<string>("Token");
+
+        if(Token.Success)
+        {
+            //await ((CustomStateProvider)authenticationStateProvider).NotifyIfExistingToken(Token.Value);
+            Console.WriteLine(Token.Value);
+        }
+        //var authState = await ((CustomStateProvider)authenticationStateProvider).GetAuthenticationStateAsync();
+        //var user = authState.User;
+        //if(user.Claims == null ) {
+        //    Console.WriteLine("no claims");
+        //} else {
+        //    Console.WriteLine("claims exist");
+        //    foreach(Claim claim in user.Claims) {
+        //        Console.WriteLine(claim.ValueType.ToString());
+        //        Console.WriteLine(claim.Type.ToString());
+        //        Console.WriteLine(claim.Value.ToString());
+        //    }
+
+        //}
+        //if (user.Identity.AuthenticationType == "IsAuthenticated")
+        //{
+        //    authMessage = $"{user.Identity.Name} is authenticated.";
+        //    claims = user.Claims;
+        //    surnameMessage =
+        //        $"Surname: {user.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value}";
+        //}
+        //else
+        //{
+        //    authMessage = "The user is NOT authenticated.";
+        //}
+        
+        await base.OnInitializedAsync();
+    }
+}

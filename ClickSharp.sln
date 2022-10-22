@@ -5,9 +5,9 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClickSharp", "ClickSharp\ClickSharp.csproj", "{87F105DE-FBA4-41B1-BF35-43E4342795B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickSharp.DataLayer", "ClickSharp.DataLayer\ClickSharp.DataLayer.csproj", "{6280A7A7-FB89-446D-8B39-AACB28F06A24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClickSharp.DataLayer", "ClickSharp.DataLayer\ClickSharp.DataLayer.csproj", "{6280A7A7-FB89-446D-8B39-AACB28F06A24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClickSharp.Models", "ClickSharp.Models\ClickSharp.Models.csproj", "{F80E3666-E630-4E63-8D08-9ACA4B0E83EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClickSharp.Models", "ClickSharp.Models\ClickSharp.Models.csproj", "{F80E3666-E630-4E63-8D08-9ACA4B0E83EA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

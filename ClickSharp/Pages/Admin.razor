@@ -1,43 +1,32 @@
 ﻿@page "/cs-admin"
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
+@using ClickSharp.Models.Data
 
 <h3>Admin</h3>
-    <div class="container py-5 h-100">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                <div class="card bg-dark text-white" style="border-radius: 1rem;">
-                    <div class="card-body p-5 text-center">
+<EditForm Model="_loginModel" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
 
-                        <div class="mb-md-1 mt-md-4 pb-5">
-
-                            <h2 class="fw-bold mb-2 text-uppercase">Dołącz do czatu</h2>
-                            <p class="text-white-50 mb-5">Wybierz nazwę</p>
-
-                            <div class="form-outline form-white mb-4">
-                                <input type="text" placeholder="nick" min="5" id="typeEmailX" class="form-control form-control-lg" @bind=_name />
-                            </div>
-
-
-                            <button class="btn btn-outline-light btn-lg px-5" type="submit" @onclick=StartChat>Rozpocznij</button>
-
-                            
-                                <p class="mb-0 mt-5">
-                                    aplikacja mobilna już wkrótce
-                                </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="form-outline mb-4">
+        <InputText type="email" id="emailForm" class="form-control" @bind-Value="_loginModel.Email" />
+        <label class="form-label" for="emailForm">Email address</label>
     </div>
+    <div class="form-outline mb-4">
+        <InputText type="password" id="passwordForm" class="form-control" @bind-Value="_loginModel.Password" />
+        <label class="form-label" for="passwordForm">Password</label>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block mb-4">Sign In</button>
+</EditForm>
+
 
 @code {
-    private string? _name;
-    public async void StartChat() {
-        if(_name != null) {
-            await ((CustomStateProvider)customStateProvider).Login(_name);
-            UriHelper.NavigateTo("/Chat");
-        }
+    private LoginModel _loginModel = new();
+
+    private async Task HandleValidSubmit()
+    {
+        await ((CustomStateProvider)customStateProvider).Login(_loginModel);
+        await Task.Delay(1000);
+        UriHelper.NavigateTo("/dashboard");
     }
 }

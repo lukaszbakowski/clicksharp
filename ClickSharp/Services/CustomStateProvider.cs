@@ -1,5 +1,6 @@
 ﻿namespace ClickSharp.Services
 {
+    using ClickSharp.Models.Data.Interfaces;
     using Microsoft.AspNetCore.Components.Authorization;
     using System.Security.Claims;
     public class CustomStateProvider : AuthenticationStateProvider
@@ -17,10 +18,11 @@
                 return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonymous)));
             }
         }
-        public async Task Login(string name)
+        public async Task Login(IUser user)
         {
+
             _claimsIdentity = new ClaimsIdentity(new Claim[] {
-                    new Claim(ClaimTypes.Name, name),
+                    new Claim(ClaimTypes.Email, user.Email),
                     new Claim(ClaimTypes.Role, "default")
                 }, "authorizedUser");
             NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());

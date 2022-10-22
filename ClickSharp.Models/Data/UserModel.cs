@@ -1,4 +1,5 @@
-﻿using ClickSharp.Models.Enums;
+﻿using ClickSharp.Models.Data.Interfaces;
+using ClickSharp.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ClickSharp.Models.Data
 {
-    public class UserModel
+    public class UserModel : IUser
     {
         public int Id { get; set; }
         [StringLength(50)]
