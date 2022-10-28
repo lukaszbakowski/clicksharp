@@ -3,6 +3,8 @@ using ClickSharp.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
+using ClickSharp.DataLayer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddAuthorizationCore(); //<--
+builder.Services.AddDbContext<ClickSharpContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"));
+});
 builder.Services.AddScoped<AuthenticationStateProvider, CustomStateProvider>();
 
 var app = builder.Build();

@@ -4,7 +4,12 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
 
-<h3>Auth</h3>
+<AuthorizeView Roles="admin">
+    <Authorized>
+        <h3>Auth</h3>
+    </Authorized>
+</AuthorizeView>
+
 
 @code {
     private string? authMessage;

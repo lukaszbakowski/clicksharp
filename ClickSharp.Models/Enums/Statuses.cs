@@ -11,6 +11,7 @@ namespace ClickSharp.Models.Enums
         Disabled,
         IsActive,
         Deleted,
+        PwReset,
         Banned
     }
 }
