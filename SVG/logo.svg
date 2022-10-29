@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   sodipodi:docname="logo.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:pageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="6.2217172"
+     inkscape:cx="282.39792"
+     inkscape:cy="398.52342"
+     inkscape:window-width="2560"
+     inkscape:window-height="1362"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:snap-object-midpoints="true"
+     inkscape:snap-text-baseline="true">
+    <sodipodi:guide
+       position="97.128864,191.0683"
+       orientation="0,-1"
+       id="guide16034" />
+    <sodipodi:guide
+       position="90.835051,183.88144"
+       orientation="1,0"
+       id="guide828" />
+    <sodipodi:guide
+       position="85.221649,185.92268"
+       orientation="1,0"
+       id="guide830" />
+    <sodipodi:guide
+       position="95.087626,195.23583"
+       orientation="0,-1"
+       id="guide6422" />
+    <sodipodi:guide
+       position="95.810564,189.02707"
+       orientation="0,-1"
+       id="guide6424" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2">
+    <linearGradient
+       id="linearGradient15656"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop15654" />
+    </linearGradient>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;fill:#000000;stroke-width:0.264583"
+       x="80.671387"
+       y="105.9317"
+       id="text1485"><tspan
+         sodipodi:role="line"
+         id="tspan1483"
+         style="stroke-width:0.264583"
+         x="80.671387"
+         y="105.9317">Click#</tspan></text>
+    <path
+       style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:0.264583"
+       d="m 85.221648,106.86727 v 1.10566 h 5.613402 v -6.20876 h -5.613402 v 1.78609"
+       id="path10393" />
+  </g>
+</svg>

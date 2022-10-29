@@ -1,4 +1,4 @@
-﻿using ClickSharp.Models.Data.Interfaces;
+﻿using ClickSharp.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClickSharp.Models.Data
+namespace ClickSharp.Models.Forms
 {
-    public class LoginModel : IUser
+    public class LoginModel : ILogin
     {
         [Required(ErrorMessage = "Email is required")]
         [StringLength(50)]

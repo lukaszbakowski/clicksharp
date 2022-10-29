@@ -1,6 +1,5 @@
 ﻿namespace ClickSharp.Services
 {
-    using ClickSharp.Models.Data.Interfaces;
     using Microsoft.AspNetCore.Components.Authorization;
     using System.Security.Claims;
     using ClickSharp.DataLayer;
@@ -10,6 +9,7 @@
     using System.Security.Cryptography;
     using System.Text;
     using System.Data;
+    using ClickSharp.Models.Interfaces;
 
     public class CustomStateProvider : AuthenticationStateProvider
     {
@@ -31,7 +31,7 @@
                 return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonymous)));
             }
         }
-        public async Task Login(IUser user)
+        public async Task Login(ILogin user)
         {
             if (_context.Users != null)
             {
