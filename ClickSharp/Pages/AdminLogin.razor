@@ -1,4 +1,4 @@
-﻿@page "/cs-admin/"
+﻿@attribute [Route(PageUrls.AdminLogin)]
 @layout LoginLayout
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
@@ -29,7 +29,6 @@
     private async Task HandleValidSubmit()
     {
         await ((CustomStateProvider)customStateProvider).Login(_loginModel);
-        await Task.Delay(1000);
-        UriHelper.NavigateTo("/admin/dashboard");
+        UriHelper.NavigateTo(PageUrls.DashBoard);
     }
 }

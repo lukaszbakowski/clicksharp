@@ -10,6 +10,9 @@
     using System.Text;
     using System.Data;
     using ClickSharp.Models.Interfaces;
+    using System.Linq;
+    using Microsoft.AspNetCore.Authorization;
+    using ClickSharp.Configuration;
 
     public class CustomStateProvider : AuthenticationStateProvider
     {
@@ -35,25 +38,31 @@
         {
             if (_context.Users != null)
             {
-                User? getUser = await _context.Users.FirstOrDefaultAsync(x => (x.Email == user.Email) && VerifyHash(x.Password, user.Password));
+                User? getUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email && x.Password == GetHash(user.Password));
                 if (getUser != null)
                 {
                     List<Claim> claims = new()
                     {
                         new Claim(ClaimTypes.Email, getUser.Email),
-                        new Claim(ClaimTypes.Name, getUser.Name)
+                        new Claim(ClaimTypes.Name, getUser.Name),
+                        new Claim(ClaimTypes.NameIdentifier, getUser.Id.ToString())
                     };
 
-                    foreach (var role in getUser.Roles)
+                    if (_context.Roles != null)
                     {
-                        claims.Add(new Claim(ClaimTypes.Role, role.Name));
+                        getUser.Roles = await _context.Roles.Where(x => x.UserId == getUser.Id).ToListAsync();
+
+                        foreach (var role in getUser.Roles)
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, role.Name));
+                        }
                     }
 
                     _claimsIdentity = new ClaimsIdentity(claims, "authorizedUser");
                     NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
                 }
             }
-            await Task.Delay(1000);
+            await Task.Delay(500);
             await Task.CompletedTask;
         }
         public async Task LogOff()
@@ -63,49 +72,76 @@
             await Task.Delay(1000);
             await Task.CompletedTask;
         }
-        public async Task AddOrModifyUser(UserModel currentUser, UserModel newUser, IEnumerable<string>? roles)
+        public async Task ModifyUser(UserModel currentUser, UserModel newUser)
         {
             if (_context.Users != null)
             {
-                User? getUser = await _context.Users.FirstOrDefaultAsync(x => (x.Email == currentUser.Email) && VerifyHash(x.Password, currentUser.Password));
-                if (getUser == null)
+                User? getUser = await _context.Users.FirstOrDefaultAsync(x => (x.Email == currentUser.Email) && x.Password == GetHash(currentUser.Password));
+                if (getUser != null)
                 {
-                    getUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == newUser.Email);
-                    if(getUser == null && roles != null)
-                    {
-                        getUser = new();
-                        getUser.Name = newUser.Name;
-                        getUser.Email = newUser.Email;
-                        getUser.Password = GetHash(newUser.Password);
-                        getUser.Status = newUser.Status;
-                        if(roles.Any())
-                        {
-                            foreach (var role in roles)
-                            {
-                                getUser.Roles.Add(new Role()
-                                {
-                                    Name = role
-                                });
-                            }
-                        } else
-                        {
-                            getUser.Roles.Add(new Role()
-                            {
-                                Name = "default"
-                            });
-                        }
-
-                        _context.Users.Add(getUser);
-                        await _context.SaveChangesAsync();
-                    }
-                } else
-                {
-                    getUser.Email = newUser.Email;
-                    getUser.Name = newUser.Name;
-                    getUser.Password = GetHash(newUser.Password);
+                    UserModel validateUser = new();
+                    getUser.Email = newUser.Email == validateUser.Email? getUser.Email : newUser.Email;
+                    getUser.Name = newUser.Name == validateUser.Name ? getUser.Name : newUser.Name;
+                    getUser.Password = newUser.Password == validateUser.Password? getUser.Password : GetHash(newUser.Password);
                     await _context.SaveChangesAsync();
                 }
             }
+            await Task.Delay(1000);
+            await Task.CompletedTask;
+        }
+        [Authorize(Roles = RoleNames.CsAdmin)]
+        public async Task AddUser(UserModel newUser, IEnumerable<string>? roles)
+        {
+            if (_context.Users != null)
+            {
+                User? getUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == newUser.Email);
+                if (getUser == null && roles != null)
+                {
+                    getUser = new();
+                    getUser.Name = newUser.Name;
+                    getUser.Email = newUser.Email;
+                    getUser.Password = GetHash(newUser.Password);
+                    getUser.Status = newUser.Status;
+                    if (roles.Any())
+                    {
+                        foreach (var role in roles)
+                        {
+                            getUser.Roles.Add(new Role()
+                            {
+                                Name = role
+                            });
+                        }
+                    }
+                    else
+                    {
+                        getUser.Roles.Add(new Role()
+                        {
+                            Name = "default"
+                        });
+                    }
+
+                    _context.Users.Add(getUser);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            await Task.Delay(1000);
+            await Task.CompletedTask;
+        }
+        [Authorize(Roles = $"{RoleNames.CsAdmin},{RoleNames.CsUserDelete}")]
+        public async Task RemoveUser(int id)
+        {
+            await Task.Delay(1000);
+            await Task.CompletedTask;
+        }
+        [Authorize(Roles = $"{RoleNames.CsAdmin},{RoleNames.CsRoleWrite}")]
+        public async Task AddRoles(int id, IEnumerable<string>? roles)
+        {
+            await Task.Delay(1000);
+            await Task.CompletedTask;
+        }
+        [Authorize(Roles = $"{RoleNames.CsAdmin},{RoleNames.CsRoleDelete}")]
+        public async Task RemoveRoles(int id, IEnumerable<string>? roles)
+        {
             await Task.Delay(1000);
             await Task.CompletedTask;
         }
@@ -124,7 +160,7 @@
                 return sBuilder.ToString();
             }
         }
-        private bool VerifyHash(string pw, string pwFromDB)
+        private bool VerifyHash(string pwFromDB, string pw)
         {
             var hashOfInput = GetHash(pw);
 

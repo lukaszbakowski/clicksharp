@@ -1,10 +1,6 @@
-﻿@attribute [Route(PageUrls.EditProfile)]
+﻿@attribute [Route(PageUrls.ManageUsers)]
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
-
-
-
-<h3>EditProfile</h3>
 
 <EditForm Model="_loginModel" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
