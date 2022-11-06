@@ -4,11 +4,133 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage ProtectedSessionStore
 
-<h3>Auth</h3>
+<CascadingAuthenticationState>
+    <AuthorizeView Roles="admin">
+        <Authorized>
+            <nav class="background-color:red">
+                <h3>Auth</h3>
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> Home
+                </NavLink>
+                <NavLink class="nav-link" href="/admin/dashboard" Match="NavLinkMatch.All">
+                    <span class="oi oi-home" aria-hidden="true"></span> DashBoard
+                </NavLink>
+                <p>@authMessage</p>
+                <p>@userName</p>
+            </nav>
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <!-- Container wrapper -->
+                <div class="container-fluid">
+                    <!-- Toggle button -->
+                    <button class="navbar-toggler"
+                            type="button"
+                            data-mdb-toggle="collapse"
+                            data-mdb-target="#navbarSupportedContent"
+                            aria-controls="navbarSupportedContent"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
+                    </button>
+
+                    <!-- Collapsible wrapper -->
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <!-- Navbar brand -->
+                        <a class="navbar-brand mt-2 mt-lg-0" href="#">
+                            <img src="/img/logo.svg"
+                                 height="15"
+                                 alt="MDB Logo"
+                                 loading="lazy" />
+                        </a>
+                        <!-- Left links -->
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Team</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Projects</a>
+                            </li>
+                        </ul>
+                        <!-- Left links -->
+                    </div>
+                    <!-- Collapsible wrapper -->
+                    <!-- Right elements -->
+                    <div class="d-flex align-items-center">
+                        <!-- Icon -->
+                        <a class="text-reset me-3" href="#">
+                            <i class="fas fa-shopping-cart"></i>
+                        </a>
+
+                        <!-- Notifications -->
+                        <div class="dropdown">
+                            <a class="text-reset me-3 dropdown-toggle hidden-arrow"
+                               href="#"
+                               id="navbarDropdownMenuLink"
+                               role="button"
+                               data-mdb-toggle="dropdown"
+                               aria-expanded="false">
+                                <i class="fas fa-bell"></i>
+                                <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end"
+                                aria-labelledby="navbarDropdownMenuLink">
+                                <li>
+                                    <a class="dropdown-item" href="#">Some news</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Another news</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Something else here</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- Avatar -->
+                        <div class="dropdown">
+                            <a class="dropdown-toggle d-flex align-items-center hidden-arrow"
+                               href="#"
+                               id="navbarDropdownMenuAvatar"
+                               role="button"
+                               data-mdb-toggle="dropdown"
+                               aria-expanded="false">
+                                <img src="https://mdbcdn.b-cdn.net/img/new/avatars/2.webp"
+                                     class="rounded-circle"
+                                     height="25"
+                                     alt="Black and White Portrait of a Man"
+                                     loading="lazy" />
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end"
+                                aria-labelledby="navbarDropdownMenuAvatar">
+                                <li>
+                                    <a class="dropdown-item" href="#">My profile</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Settings</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">Logout</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Right elements -->
+                </div>
+                <!-- Container wrapper -->
+            </nav>
+            <!-- Navbar -->
+        </Authorized>
+    </AuthorizeView>
+</CascadingAuthenticationState>
+
+
 
 @code {
     private string? authMessage;
-    private string? surnameMessage;
+    //private string? surnameMessage;
+    private string? userName;
     private IEnumerable<Claim> claims = Enumerable.Empty<Claim>();
     protected override async Task OnInitializedAsync()
     {
@@ -19,26 +141,37 @@
             //await ((CustomStateProvider)authenticationStateProvider).NotifyIfExistingToken(Token.Value);
             Console.WriteLine(Token.Value);
         }
-        //var authState = await ((CustomStateProvider)authenticationStateProvider).GetAuthenticationStateAsync();
-        //var user = authState.User;
-        //if(user.Claims == null ) {
-        //    Console.WriteLine("no claims");
-        //} else {
-        //    Console.WriteLine("claims exist");
-        //    foreach(Claim claim in user.Claims) {
-        //        Console.WriteLine(claim.ValueType.ToString());
-        //        Console.WriteLine(claim.Type.ToString());
-        //        Console.WriteLine(claim.Value.ToString());
-        //    }
+        var authState = await ((CustomStateProvider)authenticationStateProvider).GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity != null)
+        {
+            if (user.Identity.AuthenticationType == "IsAuthenticated")
+            {
+                authMessage = $"{user.Identity.Name} is authenticated.";
+                if (user.Claims == null)
+                {
+                    Console.WriteLine("no claims");
+                }
+                else
+                {
+                    Console.WriteLine("claims exist");
+                    foreach (Claim claim in user.Claims)
+                    {
+                        Console.WriteLine(claim.ValueType.ToString());
+                        Console.WriteLine(claim.Type.ToString());
+                        Console.WriteLine(claim.Value.ToString());
+                    }
+                    claims = user.Claims;
+                    //surnameMessage = $"Surname: {user.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value}";
+                    userName = user.FindFirst(c => c.Type == ClaimTypes.Name)?.Value;
+                }
+            }
+        }
 
-        //}
-        //if (user.Identity.AuthenticationType == "IsAuthenticated")
-        //{
-        //    authMessage = $"{user.Identity.Name} is authenticated.";
-        //    claims = user.Claims;
-        //    surnameMessage =
-        //        $"Surname: {user.FindFirst(c => c.Type == ClaimTypes.Surname)?.Value}";
-        //}
+                
+            
+        
+
         //else
         //{
         //    authMessage = "The user is NOT authenticated.";

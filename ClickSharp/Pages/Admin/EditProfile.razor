@@ -1,24 +1,28 @@
-﻿@page "/cs-admin"
+﻿@attribute [Route(PageUrls.EditProfile)]
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
-@using ClickSharp.Models.Data
 
-<h3>Admin</h3>
+
+
+<h3>EditProfile</h3>
+
 <EditForm Model="_loginModel" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-outline mb-4">
-        <InputText type="email" id="emailForm" class="form-control" @bind-Value="_loginModel.Email" />
+        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_loginModel.Email" />
         <label class="form-label" for="emailForm">Email address</label>
     </div>
     <div class="form-outline mb-4">
-        <InputText type="password" id="passwordForm" class="form-control" @bind-Value="_loginModel.Password" />
+        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_loginModel.Password" />
         <label class="form-label" for="passwordForm">Password</label>
     </div>
-    <button type="submit" class="btn btn-primary btn-block mb-4">Sign In</button>
+    <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
+    <div class="d-flex justify-content-around align-items-center mb-4">
+        <a href="#!">Forgot password?</a>
+    </div>
 </EditForm>
-
 
 @code {
     private LoginModel _loginModel = new();
@@ -27,6 +31,6 @@
     {
         await ((CustomStateProvider)customStateProvider).Login(_loginModel);
         await Task.Delay(1000);
-        UriHelper.NavigateTo("/dashboard");
+        UriHelper.NavigateTo(PageUrls.DashBoard);
     }
 }

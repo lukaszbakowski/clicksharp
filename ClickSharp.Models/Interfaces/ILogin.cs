@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClickSharp.Models.Data.Interfaces
+namespace ClickSharp.Models.Interfaces
 {
-    public interface IUser
+    public interface ILogin
     {
         string Email { get; set; }
         string Password { get; set; }
