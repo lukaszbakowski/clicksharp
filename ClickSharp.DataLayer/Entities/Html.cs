@@ -15,5 +15,6 @@ namespace ClickSharp.DataLayer.Entities
         [ForeignKey("ParentId")]
         public Html? ParentHtml { get; set; }
         public List<Html> Htmls { get; set; } = new List<Html>();
+        public List<Attribute> Attributes { get; set; } = new List<Attribute>();
     }
 }

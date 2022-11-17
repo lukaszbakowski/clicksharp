@@ -14,7 +14,6 @@ namespace ClickSharp.Models.Data
         public int? PageId { get; set; }
         public int? ParentId { get; set; }
         public int? IndexId { get; set; }
-        public IDictionary<string, string>? Attributes { get; set; }
         public string? Content { get; set; }
     }
 }
