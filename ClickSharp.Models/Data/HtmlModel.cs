@@ -11,10 +11,10 @@ namespace ClickSharp.Models.Data
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Type { get; set; } = string.Empty;
+        public int? PageId { get; set; }
         public int? ParentId { get; set; }
-        public int? ChildId { get; set; }
+        public int? IndexId { get; set; }
         public IDictionary<string, string>? Attributes { get; set; }
-        public IDictionary<string, string>? Classes { get; set; }
         public string? Content { get; set; }
     }
 }
