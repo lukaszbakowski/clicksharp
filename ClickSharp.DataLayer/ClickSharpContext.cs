@@ -19,5 +19,6 @@ namespace ClickSharp.DataLayer
         public DbSet<Role>? Roles { get; set; }
         public DbSet<Html>? Htmls { get; set; }
         public DbSet<Page>? Pages { get; set; }
+        public DbSet<Img>? Images { get; set; }
     }
 }
