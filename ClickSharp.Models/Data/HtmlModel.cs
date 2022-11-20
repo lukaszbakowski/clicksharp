@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClickSharp.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,11 +10,10 @@ namespace ClickSharp.Models.Data
     public class HtmlModel
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Type { get; set; } = string.Empty;
         public int? PageId { get; set; }
         public int? ParentId { get; set; }
-        public int? IndexId { get; set; }
+        public Tag Tag { get; set; } = Tag.SPAN;
+        public int? Index { get; set; }
         public string? Content { get; set; }
     }
 }

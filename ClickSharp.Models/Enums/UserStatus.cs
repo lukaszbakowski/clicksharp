@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace ClickSharp.Models.Enums
 {
-    public enum Statuses
+    public enum UserStatus
     {
-        Disabled,
-        IsActive,
-        Deleted,
-        PwReset,
-        Banned
+        DISABLED,
+        IS_ACTIVE,
+        DELETED,
+        PW_RESET,
+        BANNED
     }
 }

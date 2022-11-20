@@ -19,6 +19,6 @@ namespace ClickSharp.Models.Data
         [StringLength(255)]
         public string Password { get; set; } = "123Example@Password";
         public DateTime Registered { get; set; } = DateTime.UtcNow;
-        public Statuses Status { get; set; } = Statuses.IsActive;
+        public UserStatus Status { get; set; } = UserStatus.IS_ACTIVE;
     }
 }
