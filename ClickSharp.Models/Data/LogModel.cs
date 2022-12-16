@@ -9,8 +9,8 @@ namespace ClickSharp.Models.Data
     public class LogModel
     {
         public int Id { get; set; }
-        public string Key { get; set; }
-        public string Value { get; set; }
-        public string Modified
+        public string Name { get; set; }
+        public int UserId { get; set; }
+        public DateTime EventTime { get; set; } = DateTime.UtcNow;
     }
 }

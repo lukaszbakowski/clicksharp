@@ -16,5 +16,6 @@ namespace ClickSharp.Models.Data
         public DateTime ModificationTime { get; set; } = DateTime.UtcNow;
         public string ModifiedBy { get; set; } = string.Empty; //rozwazyc relacje z userem?
         public PageStatus Status { get; set; } = PageStatus.IS_DRAFT;
+        public int StatusConfigId { get; set; }
     }
 }

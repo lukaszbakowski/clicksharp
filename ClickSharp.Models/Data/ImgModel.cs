@@ -12,7 +12,6 @@ namespace ClickSharp.Models.Data
         public string Name { get; set; }
         public byte[] Payload { get; set; }
         public bool IsDeleted { get; set; }
-        public string UploadeddBy { get; set; }
-        public string DeletedBy { get; set; }
+        public string ModifiedBy { get; set; }
     }
 }
