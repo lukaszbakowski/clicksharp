@@ -13,13 +13,13 @@ namespace ClickSharp.Services
         {
             _context = Context;
         }
-        [Authorize(Roles = $"{AppRoles.CsAdmin},{AppRoles.Role.Write}")]
+        [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Role.Write}")]
         public async Task AddRoles(int id, IEnumerable<string>? roles)
         {
             await Task.Delay(1000);
             await Task.CompletedTask;
         }
-        [Authorize(Roles = $"{AppRoles.CsAdmin},{AppRoles.Role.Delete}")]
+        [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Role.Delete}")]
         public async Task RemoveRoles(int id, IEnumerable<string>? roles)
         {
             await Task.Delay(1000);

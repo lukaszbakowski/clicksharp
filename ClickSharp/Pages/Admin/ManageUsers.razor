@@ -1,4 +1,4 @@
-﻿@attribute [Route(PageUrls.ManageUsers)]
+﻿@attribute [Route(AppUrls.ManageUsers)]
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
 @inject ClickSharpContext _context
@@ -18,10 +18,12 @@
     <div>
         @foreach(var role in _userForm.Roles)
         {
-        <label>
+            <p>
+                        <label>
             @role.Name
             <InputCheckbox @bind-Value="role.IsSet" />
         </label>
+            </p>
         }
     </div>
     <button type="submit" class="btn btn-primary btn-lg btn-block">Add new User</button>
@@ -34,25 +36,17 @@
     protected override void OnInitialized()
     {
 
-        //for(int i =0;i<typeof(RoleNames).GetProperties().Length;i++)
-        //{
-        //    UserForm.RoleForm role = new UserForm.RoleForm
-        //        {
-        //            Name = typeof(RoleNames).GetProperties().GetValue(i) as string
-        //        };
-        //        Console.WriteLine(role.Name);
-        //        Console.WriteLine(i.ToString());
-        //    _userForm.Roles.Add(role);
-        //}
 
-        //foreach(var item in typeof(AppRoles).GetProperties())
-        //{
-        //    UserForm.RoleForm role = new UserForm.RoleForm
-        //        {
-        //            Name = item.GetValue(AppRoles, null) as string
-        //        };
-        //    _userForm.Roles.Add(role);
-        //}
+
+        foreach(var item in AppRoles.GetList)
+        {
+            UserForm.RoleForm role = new UserForm.RoleForm
+                {
+                    Name = item
+                };
+            _userForm.Roles.Add(role);
+        }
+        
         base.OnInitialized();
     }
 
@@ -60,7 +54,7 @@
     {
         
         await Task.Delay(1000);
-        UriHelper.NavigateTo(PageUrls.DashBoard);
+        UriHelper.NavigateTo(AppUrls.DashBoard);
     }
 
 }

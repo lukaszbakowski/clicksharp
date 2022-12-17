@@ -1,6 +1,6 @@
 ﻿namespace ClickSharp.Configuration
 {
-    public class PageUrls
+    public class AppUrls
     {
         public const string ManageUsers = "/admin/manage-users";
         public const string EditProfile = "/admin/edit-profile";

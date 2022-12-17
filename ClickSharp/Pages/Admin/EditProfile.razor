@@ -1,4 +1,4 @@
-﻿@attribute [Route(PageUrls.EditProfile)]
+﻿@attribute [Route(AppUrls.EditProfile)]
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
 
@@ -31,6 +31,6 @@
     {
         await ((CustomStateProvider)customStateProvider).Login(_loginModel);
         await Task.Delay(1000);
-        UriHelper.NavigateTo(PageUrls.DashBoard);
+        UriHelper.NavigateTo(AppUrls.DashBoard);
     }
 }

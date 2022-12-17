@@ -15,7 +15,7 @@ namespace ClickSharp.Services
         {
             _context = Context;
         }
-        [Authorize(Roles = AppRoles.CsAdmin)]
+        [Authorize(Roles = AppRoles.Admin)]
         public async Task AddUser(UserModel newUser, IEnumerable<string>? roles)
         {
             if (_context.Users != null)
@@ -72,7 +72,7 @@ namespace ClickSharp.Services
             await Task.CompletedTask;
         }
 
-        [Authorize(Roles = $"{AppRoles.CsAdmin},{AppRoles.User.Delete}")]
+        [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.User.Delete}")]
         public async Task RemoveUser(int id)
         {
             await Task.Delay(1000);

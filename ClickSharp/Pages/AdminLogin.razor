@@ -1,4 +1,4 @@
-﻿@attribute [Route(PageUrls.AdminLogin)]
+﻿@attribute [Route(AppUrls.AdminLogin)]
 @layout LoginLayout
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
@@ -29,6 +29,6 @@
     private async Task HandleValidSubmit()
     {
         await ((CustomStateProvider)customStateProvider).Login(_loginModel);
-        UriHelper.NavigateTo(PageUrls.DashBoard);
+        UriHelper.NavigateTo(AppUrls.DashBoard);
     }
 }
