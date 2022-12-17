@@ -29,6 +29,6 @@
     private async Task HandleValidSubmit()
     {
         await ((CustomStateProvider)customStateProvider).Login(_loginModel);
-        UriHelper.NavigateTo(AppUrls.DashBoard);
+        UriHelper.NavigateTo(AppUrls.EN.Admin.DashBoard);
     }
 }

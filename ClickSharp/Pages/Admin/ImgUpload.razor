@@ -2,6 +2,21 @@
 @attribute [Route(AppUrls.PL.Admin.ZaladujObraz)]
 <h3>ImgUpload</h3>
 
+<EditForm OnValidSubmit="@UploadSubmit">
+    <InputFile OnChange="@LoadFiles" multiple />
+</EditForm>
 @code {
-
+    private int maxAllowedFiles = 3;
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            await using FileStream fs = new(path, FileMode.Create);
+            await file.OpenReadStream().CopyToAsync(fs);
+        }
+    }
+    private async Task UploadSubmit()
+    {
+        
+    }
 }

@@ -7,31 +7,55 @@
 
 <h3>EditProfile</h3>
 
-<EditForm Model="_loginModel" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="_userForm" OnValidSubmit="@EditNameSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-outline mb-4">
-        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_loginModel.Email" />
-        <label class="form-label" for="emailForm">Email address</label>
-    </div>
-    <div class="form-outline mb-4">
-        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_loginModel.Password" />
-        <label class="form-label" for="passwordForm">Password</label>
+        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_userForm.Email" />
+        <label class="form-label" for="emailForm">New email address</label>
     </div>
     <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
     <div class="d-flex justify-content-around align-items-center mb-4">
         <a href="#!">Forgot password?</a>
     </div>
 </EditForm>
+<EditForm Model="_userForm" OnValidSubmit="@EditEmailSubmit">
+     <DataAnnotationsValidator />
+     <ValidationSummary />
+         <div class="form-outline mb-4">
+        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_userForm.Email" />
+        <label class="form-label" for="emailForm">New email address</label>
+    </div>
+</EditForm>
+<EditForm Model="_userForm" OnValidSubmit="@EditPasswordSubmit">
+     <DataAnnotationsValidator />
+     <ValidationSummary />
+         <div class="form-outline mb-4">
+        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_loginModel.Password" />
+        <label class="form-label" for="passwordForm">Password</label>
+    </div>
+</EditForm>
 
 @code {
-    private LoginForm _loginModel = new();
+    private UserForm _userForm = new();
 
     private async Task HandleValidSubmit()
     {
-        await ((CustomStateProvider)customStateProvider).Login(_loginModel);
+
         await Task.Delay(1000);
-        UriHelper.NavigateTo(AppUrls.DashBoard);
+        UriHelper.NavigateTo(AppUrls.EN.Admin.DashBoard);
+    }
+    private async Task EditPasswordSubmit()
+    {
+
+    }
+    private async Task EditNameSubmit()
+    {
+
+    }
+    private async Task EditEmailSubmit()
+    {
+        
     }
 }
