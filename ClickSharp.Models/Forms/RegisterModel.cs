@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ClickSharp.Models.Forms
 {
-    public class RegisterModel : LoginModel, IUser
+    public class RegisterModel : LoginForm, IUser
     {
         [Required(ErrorMessage = "Name is required")]
         [StringLength(50, ErrorMessage = "Name must be between 5 and 5 characters", MinimumLength = 5)]

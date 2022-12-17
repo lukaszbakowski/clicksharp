@@ -1,4 +1,4 @@
 ﻿@layout AdminLayout
 @using ClickSharp.Configuration;
-@attribute [Authorize(Roles = $"{RoleNames.CsAdmin},{RoleNames.CsModerator}")]
+@attribute [Authorize(Roles = $"{AppRoles.CsAdmin},{AppRoles.CsModerator}")]
 @using ClickSharp.Models.Forms

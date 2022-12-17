@@ -1,10 +1,10 @@
 ﻿using ClickSharp.Configuration;
 using ClickSharp.DataLayer;
 using ClickSharp.DataLayer.Entities;
+using ClickSharp.Helpers;
 using ClickSharp.Models.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
-using ClickSharp.Helpers;
 
 namespace ClickSharp.Services
 {
@@ -15,7 +15,7 @@ namespace ClickSharp.Services
         {
             _context = Context;
         }
-        [Authorize(Roles = RoleNames.CsAdmin)]
+        [Authorize(Roles = AppRoles.CsAdmin)]
         public async Task AddUser(UserModel newUser, IEnumerable<string>? roles)
         {
             if (_context.Users != null)
@@ -72,7 +72,7 @@ namespace ClickSharp.Services
             await Task.CompletedTask;
         }
 
-        [Authorize(Roles = $"{RoleNames.CsAdmin},{RoleNames.CsUserDelete}")]
+        [Authorize(Roles = $"{AppRoles.CsAdmin},{AppRoles.User.Delete}")]
         public async Task RemoveUser(int id)
         {
             await Task.Delay(1000);

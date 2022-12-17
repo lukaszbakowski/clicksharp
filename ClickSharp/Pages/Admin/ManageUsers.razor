@@ -1,33 +1,64 @@
 ﻿@attribute [Route(PageUrls.ManageUsers)]
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
+@inject ClickSharpContext _context
 
-<EditForm Model="_loginModel" OnValidSubmit="@HandleValidSubmit">
+<EditForm Model="_userForm" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="form-outline mb-4">
-        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_loginModel.Email" />
+        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_userForm.Email" />
         <label class="form-label" for="emailForm">Email address</label>
     </div>
     <div class="form-outline mb-4">
-        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_loginModel.Password" />
+        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_userForm.Password" />
         <label class="form-label" for="passwordForm">Password</label>
     </div>
-    <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
-    <div class="d-flex justify-content-around align-items-center mb-4">
-        <a href="#!">Forgot password?</a>
+    <div>
+        @foreach(var role in _userForm.Roles)
+        {
+        <label>
+            @role.Name
+            <InputCheckbox @bind-Value="role.IsSet" />
+        </label>
+        }
     </div>
+    <button type="submit" class="btn btn-primary btn-lg btn-block">Add new User</button>
+
 </EditForm>
-<div>
-    chujek
-</div>
+
 @code {
-    private LoginModel _loginModel = new();
+    private UserForm _userForm = new();
+
+    protected override void OnInitialized()
+    {
+
+        //for(int i =0;i<typeof(RoleNames).GetProperties().Length;i++)
+        //{
+        //    UserForm.RoleForm role = new UserForm.RoleForm
+        //        {
+        //            Name = typeof(RoleNames).GetProperties().GetValue(i) as string
+        //        };
+        //        Console.WriteLine(role.Name);
+        //        Console.WriteLine(i.ToString());
+        //    _userForm.Roles.Add(role);
+        //}
+
+        //foreach(var item in typeof(AppRoles).GetProperties())
+        //{
+        //    UserForm.RoleForm role = new UserForm.RoleForm
+        //        {
+        //            Name = item.GetValue(AppRoles, null) as string
+        //        };
+        //    _userForm.Roles.Add(role);
+        //}
+        base.OnInitialized();
+    }
 
     private async Task HandleValidSubmit()
     {
-        await ((CustomStateProvider)customStateProvider).Login(_loginModel);
+        
         await Task.Delay(1000);
         UriHelper.NavigateTo(PageUrls.DashBoard);
     }

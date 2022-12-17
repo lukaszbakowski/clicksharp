@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClickSharp.Models.Forms
 {
-    public class AddPageModel
+    public class AddPageForm
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;

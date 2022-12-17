@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ClickSharp.Models.Forms
 {
-    public class LoginModel : ILogin
+    public class LoginForm : ILogin
     {
         [Required(ErrorMessage = "Email is required")]
         [StringLength(50)]
