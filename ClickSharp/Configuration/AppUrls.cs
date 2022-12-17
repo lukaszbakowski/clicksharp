@@ -1,12 +1,33 @@
 ﻿namespace ClickSharp.Configuration
 {
-    public class AppUrls
+    public static class AppUrls
     {
-        public const string ManageUsers = "/admin/manage-users";
-        public const string EditProfile = "/admin/edit-profile";
-        public const string DashBoard = "/admin/dashboard";
-        public const string AdminLogin = "/cs-admin";
-        public const string EditPage = "/admin/PageEditor";
-        public const string AddPage = "/admin/AddPage";
+        private const string _appName = "CS";
+
+        public const string AdminLogin = $"/{_appName}-Admin";
+        public class EN
+        {
+            public class Admin
+            {
+                public const string ManageUsers = $"/{nameof(Admin)}/{nameof(ManageUsers)}";
+                public const string EditProfile = $"/{nameof(Admin)}/{nameof(EditProfile)}";
+                public const string DashBoard = $"/{nameof(Admin)}/{nameof(DashBoard)}";
+                public const string EditPage = $"/{nameof(Admin)}/{nameof(EditPage)}";
+                public const string AddPage = $"/{nameof(Admin)}/{nameof(AddPage)}";
+                public const string ImageUpload = $"/{nameof(Admin)}/{nameof(ImageUpload)}";
+            }
+        }
+        public class PL
+        {
+            public class Admin
+            {
+                public const string ZarzadzajUzytkownikami = $"/{nameof(Admin)}/{nameof(ZarzadzajUzytkownikami)}";
+                public const string EdytujProfile = $"/{nameof(Admin)}/{nameof(EdytujProfile)}";
+                public const string DashBoard = $"/{nameof(Admin)}/{nameof(DashBoard)}";
+                public const string EdytujStrone = $"/{nameof(Admin)}/{nameof(EdytujStrone)}";
+                public const string DodajStrone = $"/{nameof(Admin)}/{nameof(DodajStrone)}";
+                public const string ZaladujObraz = $"/{nameof(Admin)}/{nameof(ZaladujObraz)}";
+            }
+        }
     }
 }
