@@ -18,7 +18,7 @@ namespace ClickSharp.Models.Data
         public string Email { get; set; } = "user@example.com";
         [StringLength(255)]
         public string Password { get; set; } = "123Example@Password";
-        public DateTime Registered { get; set; } = DateTime.UtcNow;
+        public DateTime CreationDate { get; set; } = DateTime.UtcNow;
         public UserStatus Status { get; set; } = UserStatus.IS_ACTIVE;
     }
 }

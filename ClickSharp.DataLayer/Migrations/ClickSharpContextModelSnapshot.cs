@@ -22,7 +22,7 @@ namespace ClickSharp.DataLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Attribute", b =>
+            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Menu", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,46 +30,13 @@ namespace ClickSharp.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("HtmlId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("HtmlId1")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Key")
+                    b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HtmlId");
-
-                    b.HasIndex("HtmlId1");
-
-                    b.ToTable("Attribute");
-                });
-
-            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Html", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Index")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("IndexId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PageId")
                         .HasColumnType("int");
@@ -77,17 +44,13 @@ namespace ClickSharp.DataLayer.Migrations
                     b.Property<int?>("ParentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PageId");
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Htmls");
+                    b.ToTable("Menu");
                 });
 
             modelBuilder.Entity("ClickSharp.DataLayer.Entities.Page", b =>
@@ -98,21 +61,57 @@ namespace ClickSharp.DataLayer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(8000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<DateTime>("ModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ModifiedBy")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Url")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Pages");
+                });
+
+            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Privilege", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Privileges");
                 });
 
             modelBuilder.Entity("ClickSharp.DataLayer.Entities.Role", b =>
@@ -128,12 +127,7 @@ namespace ClickSharp.DataLayer.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Roles");
                 });
@@ -145,6 +139,9 @@ namespace ClickSharp.DataLayer.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -161,9 +158,6 @@ namespace ClickSharp.DataLayer.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime>("Registered")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -172,64 +166,48 @@ namespace ClickSharp.DataLayer.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Attribute", b =>
-                {
-                    b.HasOne("ClickSharp.DataLayer.Entities.Page", "Html")
-                        .WithMany()
-                        .HasForeignKey("HtmlId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ClickSharp.DataLayer.Entities.Html", null)
-                        .WithMany("Attributes")
-                        .HasForeignKey("HtmlId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Html");
-                });
-
-            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Html", b =>
+            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Menu", b =>
                 {
                     b.HasOne("ClickSharp.DataLayer.Entities.Page", "Page")
-                        .WithMany("Htmls")
+                        .WithMany()
                         .HasForeignKey("PageId");
 
-                    b.HasOne("ClickSharp.DataLayer.Entities.Html", "ParentHtml")
-                        .WithMany("Htmls")
+                    b.HasOne("ClickSharp.DataLayer.Entities.Menu", "Parent")
+                        .WithMany("Childrens")
                         .HasForeignKey("ParentId");
 
                     b.Navigation("Page");
 
-                    b.Navigation("ParentHtml");
+                    b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Role", b =>
+            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Privilege", b =>
                 {
+                    b.HasOne("ClickSharp.DataLayer.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ClickSharp.DataLayer.Entities.User", "User")
-                        .WithMany("Roles")
+                        .WithMany("Privileges")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Role");
+
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Html", b =>
+            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Menu", b =>
                 {
-                    b.Navigation("Attributes");
-
-                    b.Navigation("Htmls");
-                });
-
-            modelBuilder.Entity("ClickSharp.DataLayer.Entities.Page", b =>
-                {
-                    b.Navigation("Htmls");
+                    b.Navigation("Childrens");
                 });
 
             modelBuilder.Entity("ClickSharp.DataLayer.Entities.User", b =>
                 {
-                    b.Navigation("Roles");
+                    b.Navigation("Privileges");
                 });
 #pragma warning restore 612, 618
         }

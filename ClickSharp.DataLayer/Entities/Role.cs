@@ -10,7 +10,5 @@ namespace ClickSharp.DataLayer.Entities
 {
     public class Role : RoleModel
     {
-        [ForeignKey("UserId")]
-        public User? User { get; set; }
     }
 }

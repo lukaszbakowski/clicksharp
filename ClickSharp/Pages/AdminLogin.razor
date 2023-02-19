@@ -1,10 +1,12 @@
 ﻿@attribute [Route(AppUrls.AdminLogin)]
+@using ClickSharp.Models.Forms
 @layout LoginLayout
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
-@using ClickSharp.Models.Forms
 
-<EditForm Model="_loginModel" OnValidSubmit="@HandleValidSubmit">
+<p></p>
+@(this._loginResult)
+<EditForm Model="@_loginModel" OnValidSubmit="@HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
@@ -24,11 +26,15 @@
 
 
 @code {
-    private LoginForm _loginModel = new();
+    private ILogin _loginModel = new LoginForm();
+    private string _loginResult = string.Empty;
 
     private async Task HandleValidSubmit()
     {
-        await ((CustomStateProvider)customStateProvider).Login(_loginModel);
-        UriHelper.NavigateTo(AppUrls.EN.Admin.DashBoard);
+        if( await ((CustomStateProvider)customStateProvider).Login(_loginModel))
+            UriHelper.NavigateTo(AppUrls.Admin.PL.PanelZarzadzania);
+        else
+            _loginResult = "login failed";
+
     }
 }

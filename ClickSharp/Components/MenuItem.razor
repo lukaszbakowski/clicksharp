@@ -1,0 +1,52 @@
+﻿@inherits MenuBase
+@namespace ClickSharp.Components
+@using ClickSharp.Models.Data
+
+@*<li draggable="true" @ondragstart=DragStarted class="nav-item">
+    <a ondragover="event.preventDefault()" draggable="false" class="nav-link">
+        @if (MenuData != null)
+        {
+            @MenuData.DisplayName
+            @MenuData.Index
+        }
+    </a>
+</li>*@
+
+<li ondragover="event.preventDefault()" draggable="true" class="nav-item dropdown" @ondragstart=DragStarted>
+    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" ondragover="event.preventDefault()" draggable="false">
+                @if (MenuData != null)
+        {
+            @MenuData.DisplayName
+            @MenuData.Index
+        }
+    </a>
+    <ul>
+        @if (items.Count > 0)
+        {
+            string isActive;
+            isActive = (IsActive == 0) ? "bg-success" : "";
+            <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(0)"
+            class="text-white @isActive" style="width:10px;">
+                &nbsp;
+            </li>
+            @for (int i = 0; i < items.Count; i++)
+            {
+                <MenuItem MenuData="@items[i]" @bind-Item=_item />
+                var currentIndex = i + 1;
+                isActive = (IsActive == currentIndex) ? "bg-success" : "";
+                <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(currentIndex)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(currentIndex)"
+            class="text-white @isActive" style="width:10px;">&nbsp;</li>
+            }
+        }
+        else
+        {
+            <li ondragover="event.preventDefault()" draggable="false" style="width:100%; height:30px" @ondrop="()=>OnDrop(0)">
+                &nbsp;
+            </li>
+        }
+    </ul>
+</li>
+
+@code {
+
+}

@@ -1,13 +1,157 @@
-﻿@attribute [Route(AppUrls.EN.Admin.EditPage)] 
-@attribute [Route(AppUrls.PL.Admin.EdytujStrone)] 
-<h3>add new page</h3>
+﻿@attribute [Route(AppUrls.Admin.EN.EditPage)]
+@attribute [Route(AppUrls.Admin.PL.EdytujStrone)]
+@using TinyMCE.Blazor
+@using System.Text
+@inject ClickSharpContext dbContext
+
+
+<h3>Add new or edit existing pages</h3>
+<form>
+<div class="form-group">
+    <label for="urlInput">Url</label>
+    <input id="urlInput" type="text" @bind=currentPage.Url disabled=@isIndex class="form-control" />
+</div>
+<div class="form-group">
+    <label for="titleInput">Title</label>
+    <input id="titleInput" type="text" @bind=currentPage.Title class="form-control" />
+</div>
+<div class="form-group">
+    <label for="descriptionInput">Description</label>
+    <input id="descriptionInput" type="text" @bind=currentPage.Description class="form-control" />
+</div>
+<div class="form-group">
+    <label for="pages">Page</label>
+    <select id="pages" @onchange=LoadPage @bind-value=PageId @bind-value:event="oninput" class="form-control" >
+        <option value="">new page</option>
+        @foreach (var item in pages)
+        {
+            <option value=@item.Id>@item.Title</option>
+        }
+    </select>
+</div>
+</form>
 
 <div>
-    add Paragraph
-    add Image
-
+    @PageId
 </div>
 
-@code {
 
+
+<div class="mt-5 mb-5 ms-auto me-auto">
+    <Editor Conf="@editorConf" @bind-Value=currentPage.Content ScriptSrc="lib/tinymce/tinymce.min.js" />
+</div>
+
+<button @onclick=SaveContent>Save</button>
+<button @onclick=DeletePage disabled=@isIndex >Delete</button>
+
+@code {
+    private bool isIndex = false;
+    private List<Page> pages = new();
+    private int? pageId;
+    private string? PageId
+    {
+        get
+        {
+            if (IdExist)
+            {
+                return pageId.ToString();
+            }
+            else
+            {
+                return null;
+            }
+        }
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                pageId = Int32.Parse(value);
+                if (pageId == 1)
+                {
+                    isIndex = true;
+                } else
+                {
+                    isIndex = false;
+                }
+            }
+            else
+            {
+                pageId = null;
+            }
+        }
+    }
+    private bool IdExist => pageId != null;
+    private PageModel currentPage = new();
+
+    protected override void OnInitialized()
+    {
+        LoadEditor();
+        if (dbContext.Pages != null)
+        {
+            pages = dbContext.Pages.ToList();
+        }
+
+        base.OnInitialized();
+    }
+
+    private void SaveContent()
+    {
+        if (PageId == null)
+        {
+            if (dbContext.Pages != null)
+            {
+                dbContext.Pages.Add(
+                    new Page
+                        {
+                            Title = currentPage.Title,
+                            Description = currentPage.Description,
+                            Url = currentPage.Url,
+                            CreationTime = DateTime.UtcNow,
+                            Content = currentPage.Content
+                        }
+                );
+                dbContext.SaveChanges();
+            }
+        } else
+        {
+            Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == pageId);
+            if(dbPage != null)
+            {
+                dbPage.Title = currentPage.Title;
+                dbPage.Description = currentPage.Description;
+                dbPage.Url = currentPage.Url;
+                dbPage.ModificationTime = DateTime.UtcNow;
+                dbPage.Content = currentPage.Content;
+                dbContext.SaveChanges();
+            }
+        }
+    }
+    private void LoadPage()
+    {
+        if (IdExist)
+        {
+            Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == pageId);
+            if (dbPage != null)
+            {
+                currentPage.Id = dbPage.Id;
+                currentPage.Title = dbPage.Title;
+                currentPage.Description = dbPage.Description;
+                currentPage.Content = dbPage.Content;
+                currentPage.Url = dbPage.Url;
+            }
+        }
+    }
+    private void DeletePage()
+    {
+        if (IdExist && pageId != 1)
+        {
+            Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == pageId);
+            if (dbPage != null)
+            {
+                dbContext.Pages?.Remove(dbPage);
+                dbContext.SaveChanges();
+            }
+        }
+    }
 }
+

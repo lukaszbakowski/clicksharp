@@ -28,23 +28,23 @@ namespace ClickSharp.Services
                     getUser.Email = newUser.Email;
                     getUser.Password = new HashHelper().GetHash(newUser.Password);
                     getUser.Status = newUser.Status;
-                    if (roles.Any())
-                    {
-                        foreach (var role in roles)
-                        {
-                            getUser.Roles.Add(new Role()
-                            {
-                                Name = role
-                            });
-                        }
-                    }
-                    else
-                    {
-                        getUser.Roles.Add(new Role()
-                        {
-                            Name = "default"
-                        });
-                    }
+                    //if (roles.Any())
+                    //{
+                    //    foreach (var role in roles)
+                    //    {
+                    //        getUser.Roles.Add(new Role()
+                    //        {
+                    //            Name = role
+                    //        });
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    getUser.Roles.Add(new Role()
+                    //    {
+                    //        Name = "default"
+                    //    });
+                    //}
 
                     _context.Users.Add(getUser);
                     await _context.SaveChangesAsync();

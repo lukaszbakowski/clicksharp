@@ -1,9 +1,30 @@
 ﻿@inherits LayoutComponentBase
+@attribute [Authorize(Roles = $"{AppRoles.Admin},{AppRoles.Moderator}")]
 
 
-<h1>ADMIN</h1>
 
-@Body
+<div class="container-fluid">
+    <header class="row">
+        <AdminHeader />
+    </header>
+    <div class="row">
+        <div class="col-xl-2 col-md-4 min-vh-100" style="margin-left:-15px">
+            <AdminSidebar />
+        </div>
+
+        <main class="col-xl-10 col-md-8 min-vh-100">
+            <article class="content px-4" style="margin-top: 58px">
+                @Body
+            </article>
+            <footer class="row">
+                <p>
+                    &copy; Lukasz Bakowski 2023
+                </p>
+            </footer>
+        </main>
+    </div>
+</div>
+
 
 @code {
 

@@ -20,7 +20,8 @@
             Role.Write,
             Role.Delete
         };
-        public const string Admin = $"{_appName}.{nameof(Admin)}";
+        //public const string Admin = $"{_appName}.{nameof(Admin)}";
+        public const string Admin = $"admin";
         public const string Moderator = $"{_appName}.{nameof(Moderator)}";
         public class Page
         {

@@ -1,0 +1,96 @@
+﻿@inherits MenuBase
+@using ClickSharp.Models.Data
+@using ClickSharp.Components
+@using System.Linq
+@using ClickSharp.Helpers
+
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul ondragover="event.preventDefault()" draggable="false" class="navbar-nav me-auto mb-2 mb-lg-0">
+                @if (items.Count > 0)
+                {
+                    string isActive;
+                    isActive = (IsActive == 0) ? "bg-success" : "";
+                    <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(1)"
+                    class="text-white @isActive" style="width:10px;">
+                        &nbsp;
+                    </li>
+                    @for (int i = 0; i < items.Count; i++)
+                    {
+                        <MenuItem MenuData="@items[i]" @bind-Item=_item />
+                        var currentIndex = i + 2;
+                        isActive = (IsActive == currentIndex) ? "bg-success" : "";
+                        <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(currentIndex)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(currentIndex)"
+                    class="text-white @isActive" style="width:10px;">&nbsp;</li>
+                    }
+                }
+                else
+                {
+                    <li ondragover="event.preventDefault()" draggable="false" style="width:100%; height:30px" @ondrop="()=>OnDrop(1)">
+                        &nbsp;
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
+@foreach (var element in elementsToDrag)
+{
+    <ClickSharp.Components.MenuItem @bind-Item=_item MenuData="element" />
+}
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        items.Add(new MenuModel
+            {
+                Id = 0,
+                Index = 1,
+                DisplayName = "one"
+            }); 
+            items.Add(
+    new MenuModel
+    {
+        Id = 1,
+        Index = 2,
+        DisplayName = "two"
+    }); 
+    items.Add(
+    new MenuModel
+    {
+        Id = 2,
+        Index = 3,
+        DisplayName = "three"
+    });
+
+        elementsToDrag.Add(new MenuModel
+            {
+                Id = 3,
+                Index = 0,
+                DisplayName = "four"
+            }); 
+            elementsToDrag.Add(
+    new MenuModel
+    {
+        Id = 4,
+        Index = 0,
+        DisplayName = "five"
+    }); 
+    elementsToDrag.Add(
+    new MenuModel
+    {
+        Id = 5,
+        Index = 0,
+        DisplayName = "six"
+    });
+        base.OnInitialized();
+    }
+}

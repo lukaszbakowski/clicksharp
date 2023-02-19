@@ -1,5 +1,5 @@
-﻿@attribute [Route(AppUrls.EN.Admin.ManageUsers)]
-@attribute [Route(AppUrls.PL.Admin.ZarzadzajUzytkownikami)]
+﻿@attribute [Route(AppUrls.Admin.EN.ManageUsers)]
+@attribute [Route(AppUrls.Admin.PL.ZarzadzajUzytkownikami)]
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
 @inject ClickSharpContext _context
@@ -55,7 +55,7 @@
     {
         
         await Task.Delay(1000);
-        UriHelper.NavigateTo(AppUrls.DashBoard);
+        UriHelper.NavigateTo(AppUrls.Admin.EN.DashBoard);
     }
 
 }

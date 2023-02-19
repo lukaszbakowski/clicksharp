@@ -1,6 +1,13 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider authenticationStateProvider
 
 <PageTitle>ClickSharp</PageTitle>
+
+<AuthorizeView Roles="admin">
+    <Authorized>
+        <AdminHeader />
+    </Authorized>
+</AuthorizeView>
 
 <div class="page">
     <div class="sidebar">
@@ -16,4 +23,25 @@
             @Body
         </article>
     </main>
+    <footer class="row">
+        <p>
+            &copy; Lukasz Bakowski 2023
+        </p>
+    </footer>
 </div>
+
+@code {
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        await LoadDataAsync();
+    //    }
+    //}
+    //private async Task LoadDataAsync()
+    //{
+    //    var state = await authenticationStateProvider.GetAuthenticationStateAsync();
+    //    var user = state.User;
+    //    if (user == null) return;
+    //}
+}

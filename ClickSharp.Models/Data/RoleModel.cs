@@ -12,6 +12,5 @@ namespace ClickSharp.Models.Data
         public int Id { get; set; }
         [StringLength(50)]
         public string Name { get; set; } = "Default";
-        public int UserId { get; set; }
     }
 }

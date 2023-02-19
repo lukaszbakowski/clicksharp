@@ -1,5 +1,6 @@
 ﻿using ClickSharp.DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,8 @@ namespace ClickSharp.DataLayer
         }
         public DbSet<User>? Users { get; set; }
         public DbSet<Role>? Roles { get; set; }
-        public DbSet<Html>? Htmls { get; set; }
         public DbSet<Page>? Pages { get; set; }
-        public DbSet<Img>? Images { get; set; }
+        public DbSet<Menu>? Menu { get; set; }
+        public DbSet<Privilege>? Privileges { get; set; }
     }
 }

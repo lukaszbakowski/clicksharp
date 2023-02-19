@@ -1,22 +1,132 @@
-﻿@attribute [Route(AppUrls.EN.Admin.ImageUpload)]
-@attribute [Route(AppUrls.PL.Admin.ZaladujObraz)]
-<h3>ImgUpload</h3>
+﻿@attribute [Route(AppUrls.Admin.EN.ImageUpload)]
+@attribute [Route(AppUrls.Admin.PL.ZaladujObraz)]
+@inject IConfiguration _configuration
 
-<EditForm OnValidSubmit="@UploadSubmit">
+
+<h3>Upload Images</h3>
+
+<div class="row m-5">
     <InputFile OnChange="@LoadFiles" multiple />
-</EditForm>
+</div>
+<div class="d-flex">
+    <button @onclick="@UploadSubmit" class="btn btn-primary btn-lg btn-block">Upload</button>
+</div>
+
+<div class="row mt-5">
+    <h3>Select images you wish to remove</h3>
+    @foreach (var img in images)
+    {
+        string url = $"{AppUrls.AppImages}/{img.Key}";
+        string isActive = img.Value ? "border-dark" : "border-light";
+        
+            <figure class="col-xl-3 col-lg-6 col-12 figure">
+            <img src="@url" alt="@img.Key" @onclick="() => MarkImage(img.Key)" class="figure-img img-fluid border border-5 @isActive rounded-3" />
+            <figcaption class="figure-caption text-center text-break">@img.Key</figcaption>
+            </figure>
+        
+    }
+</div>
+<div class="d-flex m-3">
+    <button @onclick="@DeleteImages" class="btn btn-primary btn-lg btn-block">Delete Selected</button>
+</div>
+
+
+
+
 @code {
-    private int maxAllowedFiles = 3;
+    private List<IBrowserFile> files = new();
+    private int maxAllowedFiles = 5;
+    private Dictionary<string, bool> images = new();
+    private static string? baseDirectory;
+    private List<string> imagesToDelete = new();
+
+    protected override void OnInitialized()
+    {
+        baseDirectory = Path.Combine(Directory.GetCurrentDirectory(), @"Images");
+        if (Directory.Exists(baseDirectory))
+        {
+            var tempImg = Directory.GetFiles(baseDirectory, "*.*");
+            foreach (var img in tempImg)
+            {
+                images.Add(img.Substring(baseDirectory.Length + 1), false);
+            }
+        }
+        base.OnInitialized();
+    }
+    protected override Task OnInitializedAsync()
+    {
+
+        return base.OnInitializedAsync();
+    }
+
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
+        files.Clear();
         foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
         {
-            await using FileStream fs = new(path, FileMode.Create);
-            await file.OpenReadStream().CopyToAsync(fs);
+            try
+            {
+                files.Add(file);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
+        await Task.CompletedTask;
     }
     private async Task UploadSubmit()
     {
-        
+        if (files.Count > 0 && baseDirectory != null)
+        {
+            foreach (var file in files)
+            {
+                try
+                {
+                    string fileName = $"{DateTime.Now.ToString("yyyyMMddHHmmssfffffff")}-{file.Name}";
+
+                    await using FileStream fs = new($"{baseDirectory}\\{fileName}", FileMode.Create);
+                    await using var stream = file.OpenReadStream();
+                    await stream.CopyToAsync(fs);
+                    images.Add(fileName, false);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+            files.Clear();
+        }
+        await Task.CompletedTask;
+    }
+    private void MarkImage(string imgName)
+    {
+        if (imagesToDelete.Contains(imgName))
+        {
+            imagesToDelete.Remove(imgName);
+            images[imgName] = false;
+
+        }
+        else
+        {
+            imagesToDelete.Add(imgName);
+            images[imgName] = true;
+        }
+    }
+    private void DeleteImages()
+    {
+        if (imagesToDelete.Count > 0 && baseDirectory != null)
+        {
+            foreach (var img in imagesToDelete)
+            {
+                string path = $"{baseDirectory}\\{img}";
+                try
+                {
+                    images.Remove(img);
+                    File.Delete(path);
+                }
+                catch { }
+            }
+        }
     }
 }

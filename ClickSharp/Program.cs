@@ -1,17 +1,32 @@
-using ClickSharp.Data;
-using ClickSharp.Services;
+using ClickSharp.Auth;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.EntityFrameworkCore;
 using ClickSharp.DataLayer;
+using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.FileProviders;
+using ClickSharp.Configuration;
+
+var imgBaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), @"Images");
+
+if (!Directory.Exists(imgBaseDirectory))
+{
+    Directory.CreateDirectory(imgBaseDirectory);
+}
+
+AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
+{
+    Debug.WriteLine(eventArgs.Exception.ToString());
+};
 
 var builder = WebApplication.CreateBuilder(args);
+builder.WebHost.UseWebRoot("wwwroot").UseStaticWebAssets();
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
-builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddAuthorizationCore(); //<--
 builder.Services.AddDbContext<ClickSharpContext>(options =>
 {
@@ -32,6 +47,11 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(imgBaseDirectory),
+    RequestPath = new PathString(AppUrls.AppImages)
+});
 
 app.UseRouting();
 

@@ -10,6 +10,5 @@ namespace ClickSharp.DataLayer.Entities
 {
     public class Page : PageModel
     {
-        public List<Html> Htmls { get; set; } = new List<Html>();
     }
 }

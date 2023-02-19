@@ -1,5 +1,5 @@
-﻿@attribute [Route(AppUrls.EN.Admin.EditProfile)]
-@attribute [Route(AppUrls.PL.Admin.EdytujProfil)] 
+﻿@attribute [Route(AppUrls.Admin.EN.EditProfile)]
+@attribute [Route(AppUrls.Admin.PL.EdytujProfil)] 
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
 
@@ -32,7 +32,7 @@
      <DataAnnotationsValidator />
      <ValidationSummary />
          <div class="form-outline mb-4">
-        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_loginModel.Password" />
+        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_userForm.Password" />
         <label class="form-label" for="passwordForm">Password</label>
     </div>
 </EditForm>
@@ -42,20 +42,19 @@
 
     private async Task HandleValidSubmit()
     {
-
         await Task.Delay(1000);
-        UriHelper.NavigateTo(AppUrls.EN.Admin.DashBoard);
+        UriHelper.NavigateTo(AppUrls.Admin.EN.DashBoard);
     }
     private async Task EditPasswordSubmit()
     {
-
+        await Task.CompletedTask;
     }
     private async Task EditNameSubmit()
     {
-
+        await Task.CompletedTask;
     }
     private async Task EditEmailSubmit()
     {
-        
+        await Task.CompletedTask;
     }
 }
