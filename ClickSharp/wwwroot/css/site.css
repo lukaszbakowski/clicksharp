@@ -2,6 +2,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    max-width: 100vw !important;
 }
 
 h1:focus {
@@ -66,3 +67,4 @@ a, .btn-link {
 .navtext-supergray {
     color: grey!important;
 }
+

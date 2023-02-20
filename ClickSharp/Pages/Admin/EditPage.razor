@@ -41,8 +41,8 @@
     <Editor Conf="@editorConf" @bind-Value=currentPage.Content ScriptSrc="lib/tinymce/tinymce.min.js" />
 </div>
 
-<button @onclick=SaveContent>Save</button>
-<button @onclick=DeletePage disabled=@isIndex >Delete</button>
+<button @onclick=SaveContent class="btn btn-primary">Save</button>
+<button @onclick=DeletePage disabled=@isIndex class="btn btn-danger">Delete</button>
 
 @code {
     private bool isIndex = false;
@@ -111,6 +111,9 @@
                         }
                 );
                 dbContext.SaveChanges();
+                currentPage = new();
+                PageId = null;
+                StateHasChanged();
             }
         } else
         {
@@ -123,6 +126,9 @@
                 dbPage.ModificationTime = DateTime.UtcNow;
                 dbPage.Content = currentPage.Content;
                 dbContext.SaveChanges();
+                currentPage = new();
+                PageId = null;
+                StateHasChanged();
             }
         }
     }
@@ -150,6 +156,9 @@
             {
                 dbContext.Pages?.Remove(dbPage);
                 dbContext.SaveChanges();
+                currentPage = new();
+                PageId = null;
+                StateHasChanged();
             }
         }
     }

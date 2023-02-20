@@ -2,59 +2,59 @@
 @attribute [Route(AppUrls.Admin.PL.EdytujProfil)] 
 @inject AuthenticationStateProvider customStateProvider
 @inject NavigationManager UriHelper
-
-
+@using ClickSharp.Models.Enums
+@using ClickSharp.Helpers
+@inject ClickSharpContext dbContext
 
 <h3>EditProfile</h3>
 
-<EditForm Model="_userForm" OnValidSubmit="@EditNameSubmit">
+<EditForm Model="_changePasswordForm" OnValidSubmit="@EditPasswordSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
     <div class="form-outline mb-4">
-        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_userForm.Email" />
-        <label class="form-label" for="emailForm">New email address</label>
-    </div>
-    <button type="submit" class="btn btn-primary btn-lg btn-block">Sign In</button>
-    <div class="d-flex justify-content-around align-items-center mb-4">
-        <a href="#!">Forgot password?</a>
-    </div>
-</EditForm>
-<EditForm Model="_userForm" OnValidSubmit="@EditEmailSubmit">
-     <DataAnnotationsValidator />
-     <ValidationSummary />
-         <div class="form-outline mb-4">
-        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_userForm.Email" />
-        <label class="form-label" for="emailForm">New email address</label>
-    </div>
-</EditForm>
-<EditForm Model="_userForm" OnValidSubmit="@EditPasswordSubmit">
-     <DataAnnotationsValidator />
-     <ValidationSummary />
-         <div class="form-outline mb-4">
-        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_userForm.Password" />
+        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_changePasswordForm.Password" />
         <label class="form-label" for="passwordForm">Password</label>
     </div>
+    <div class="form-outline mb-4">
+        <InputText type="password" id="ConfirmPassword" class="form-control form-control-lg" @bind-Value="_changePasswordForm.ConfirmPassword" />
+        <label class="form-label" for="ConfirmPassword">Confirm Password</label>
+    </div>
+    <button type="submit" class="btn btn-primary btn-lg btn-block">Save changes</button>
 </EditForm>
 
 @code {
-    private UserForm _userForm = new();
+    private int? userId;
+    private ChangePasswordForm _changePasswordForm = new();
 
-    private async Task HandleValidSubmit()
+    protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(1000);
-        UriHelper.NavigateTo(AppUrls.Admin.EN.DashBoard);
+        var authState = await ((CustomStateProvider)customStateProvider).GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity != null)
+        {
+            if (user.Identity.AuthenticationType == "authorizedUser")
+            {
+                string? id = user.Claims.Where(c => c.Type == nameof(ClaimType.Id))
+                    .Select(c => c.Value).SingleOrDefault();
+                if(id !=null)
+                {
+                    userId = Int32.Parse(id);
+                }
+            }
+        }
+        await base.OnInitializedAsync();
     }
+
     private async Task EditPasswordSubmit()
     {
+        string hashedPassword = new HashHelper().GetHash(_changePasswordForm.Password);
+        User? dbUser = dbContext.Users?.FirstOrDefault(x=> x.Id == userId);
+        if (dbUser != null)
+        {
+            dbUser.Password = hashedPassword;
+            await dbContext.SaveChangesAsync();
+        }
         await Task.CompletedTask;
     }
-    private async Task EditNameSubmit()
-    {
-        await Task.CompletedTask;
-    }
-    private async Task EditEmailSubmit()
-    {
-        await Task.CompletedTask;
-    }
+
 }

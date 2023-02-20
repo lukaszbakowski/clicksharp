@@ -1,6 +1,7 @@
 ﻿@attribute [Route(AppUrls.Admin.EN.EditMenu)]
 @attribute [Route(AppUrls.Admin.PL.EdytujMenu)]
 @using ClickSharp.Components;
+@inject ClickSharpContext dbContext
 
 <h1>DragDrop demo</h1>
 <ul ondragover="event.preventDefault();" style="margin:20px">
@@ -9,7 +10,76 @@
 
 <MenuContainer />
     
+<h3>Add menu item</h3>
+<form>
+    <div class="form-group">
+        <label for="urlInput">Display Name</label>
+        <input id="urlInput" type="text" @bind=newMenu.DisplayName class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="pages">Bind with page</label>
+        <select id="pages" @bind-value=newMenu.PageId @bind-value:event="oninput" class="form-control">
+            <option value=0>none</option>
+            @foreach (var item in pages)
+            {
+                <option value=@item.Id>@item.Title</option>
+            }
+        </select>
+    </div>
+    <div class="mt-5">
+        <button class="btn btn-primary" type="submit" @onclick=AddNewMenu>add new menu item</button>
+    </div>
+</form>
+
 @code
 {
-   
+    private MenuModel newMenu = new();
+    private List<Page> pages = new();
+
+
+    protected override void OnInitialized()
+    {
+        if (dbContext.Pages != null)
+        {
+            pages = dbContext.Pages.ToList();
+        }
+
+        base.OnInitialized();
+    }
+    private void AddNewMenu()
+    {
+        if (!string.IsNullOrEmpty(newMenu.DisplayName) && newMenu.PageId > 0)
+        {
+            if (dbContext.Menu != null)
+            {
+                dbContext.Menu.Add(
+                    new Menu
+                        {
+                            DisplayName = newMenu.DisplayName,
+                            PageId = newMenu.PageId,
+                            Index = 0
+                        }
+                );
+                dbContext.SaveChanges();
+                newMenu = new();
+                StateHasChanged();
+            }
+        }
+        else if (!string.IsNullOrEmpty(newMenu.DisplayName))
+        {
+            if (dbContext.Menu != null)
+            {
+                dbContext.Menu.Add(
+                    new Menu
+                        {
+                            DisplayName = newMenu.DisplayName,
+                            Index = 0
+                        }
+                );
+                dbContext.SaveChanges();
+                newMenu = new();
+                StateHasChanged();
+            }
+        }
+    }
 }

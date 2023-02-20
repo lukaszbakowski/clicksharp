@@ -1,7 +1,10 @@
-﻿using ClickSharp.Helpers;
+﻿using ClickSharp.DataLayer;
+using ClickSharp.Helpers;
 using ClickSharp.Models.Data;
 using Microsoft.AspNetCore.Components;
+using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
+using ClickSharp.DataLayer.Entities;
 
 namespace ClickSharp.Components
 {
@@ -55,16 +58,42 @@ namespace ClickSharp.Components
                 }
                 else if (elementsToDrag.Exists(x => x.Id == _item.Id))
                 {
+                    foreach (var item in items)
+                    {
+                        if (item.Index >= targetIndex)
+                        {
+                            item.Index++;
+                        }
+                    }
                     elementsToDrag.Remove(_item);
                     _item.Index = targetIndex;
-                    items.Insert(targetIndex, _item);
+
+                    items.Add(_item);
                 }
+                foreach(var item in elementsToDrag)
+                {
+                    Menu? dbMenuItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == item.Id);
+                    if (dbMenuItem != null)
+                    {
+                        dbMenuItem.Index = item.Index;
+                    }
+                }
+                foreach (var item in items)
+                {
+                    Menu? dbMenuItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == item.Id);
+                    if (dbMenuItem != null)
+                    {
+                        dbMenuItem.Index = item.Index;
+                    }
+                }
+                dbContext.SaveChanges();
             }
             _item = null;
             IsActive = null;
             StateHasChanged();
         }
-
+        [Inject]
+        private ClickSharpContext dbContext { get; set; }
         [Parameter]
         public MenuModel? MenuData { get; set; }
         [Parameter]

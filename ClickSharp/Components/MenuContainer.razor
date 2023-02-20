@@ -3,7 +3,14 @@
 @using ClickSharp.Components
 @using System.Linq
 @using ClickSharp.Helpers
+@inject ClickSharpContext dbContext
 
+<style>
+    .dropdown:hover .dropdown-menu {
+        display: block;
+        margin-top: 0; /* remove the gap so it doesn't close */
+    }
+</style>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -40,57 +47,94 @@
         </div>
     </div>
 </nav>
+
+
 @foreach (var element in elementsToDrag)
 {
     <ClickSharp.Components.MenuItem @bind-Item=_item MenuData="element" />
 }
 
+<div @ondrop=DropBack style="width:290px;height:30px;" class="bg-danger text-center" ondragover="event.preventDefault()">
+    drop here to exclude from menu
+</div>
 
 @code {
+    private void DropBack()
+    {
+        if (_item != null)
+        {
+            Menu? dbMenuItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == _item.Id);
+            if (dbMenuItem != null)
+            {
+                dbMenuItem.Index = 0;
+                dbMenuItem.ParentId = null;
+                dbContext.SaveChanges();
+                _item = null;
+                IsActive = null;
+                StateHasChanged();
+            }
+        }
+    }
 
     protected override void OnInitialized()
     {
-        items.Add(new MenuModel
-            {
-                Id = 0,
-                Index = 1,
-                DisplayName = "one"
-            }); 
-            items.Add(
-    new MenuModel
-    {
-        Id = 1,
-        Index = 2,
-        DisplayName = "two"
-    }); 
-    items.Add(
-    new MenuModel
-    {
-        Id = 2,
-        Index = 3,
-        DisplayName = "three"
-    });
+        elementsToDrag.Clear();
+    //    items.Add(new MenuModel
+    //        {
+    //            Id = 0,
+    //            Index = 1,
+    //            DisplayName = "one"
+    //        });
+    //    items.Add(
+    //new MenuModel
+    //    {
+    //        Id = 1,
+    //        Index = 2,
+    //        DisplayName = "two"
+    //    });
+    //    items.Add(
+    //    new MenuModel
+    //        {
+    //            Id = 2,
+    //            Index = 3,
+    //            DisplayName = "three"
+    //        });
 
-        elementsToDrag.Add(new MenuModel
+
+        if (dbContext.Menu != null)
+        {
+            List<Menu> menu = dbContext.Menu.OrderBy(x => x.Index).ToList();
+
+            foreach (var item in menu)
             {
-                Id = 3,
-                Index = 0,
-                DisplayName = "four"
-            }); 
-            elementsToDrag.Add(
-    new MenuModel
-    {
-        Id = 4,
-        Index = 0,
-        DisplayName = "five"
-    }); 
-    elementsToDrag.Add(
-    new MenuModel
-    {
-        Id = 5,
-        Index = 0,
-        DisplayName = "six"
-    });
+                if (item.Index == 0)
+                {
+                    elementsToDrag.Add(
+                        new MenuModel
+                            {
+                                Id = item.Id,
+                                Index = item.Index,
+                                DisplayName = item.DisplayName,
+                                PageId = item.PageId,
+                                ParentId = item.ParentId
+                            }
+                    );
+                }
+                else
+                {
+                    items.Add(
+                    new MenuModel
+                        {
+                            Id = item.Id,
+                            Index = item.Index,
+                            DisplayName = item.DisplayName,
+                            PageId = item.PageId,
+                            ParentId = item.ParentId
+                        });
+                }
+            }
+        }
+
         base.OnInitialized();
     }
 }

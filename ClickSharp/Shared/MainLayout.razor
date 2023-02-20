@@ -3,32 +3,31 @@
 
 <PageTitle>ClickSharp</PageTitle>
 
-<AuthorizeView Roles="admin">
-    <Authorized>
-        <AdminHeader />
-    </Authorized>
-</AuthorizeView>
+    <AuthorizeView Roles="admin">
+        <Authorized>
+            <AdminHeader />
+        </Authorized>
+    </AuthorizeView>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+<div class="container-flux">
+    
+        <div class=" p-5">
+            <NavMenu />
         </div>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-    <footer class="row">
-        <p>
+        <main class="container">
+            <article class="content px-4 col-12">
+                @Body
+            </article>
+        </main>
+   
+    <div class=" mt-5">
+        <p class="text-center">
             &copy; Lukasz Bakowski 2023
         </p>
-    </footer>
+    </div>
 </div>
+
 
 @code {
     //protected override async Task OnAfterRenderAsync(bool firstRender)
