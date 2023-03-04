@@ -9,6 +9,6 @@ namespace ClickSharp.DataLayer.Entities
 {
     public class User : UserModel
     {
-        public virtual List<Privilege> Privileges { get; set; } = new List<Privilege>();
+        public virtual List<Privilege>? Privileges { get; set; };
     }
 }

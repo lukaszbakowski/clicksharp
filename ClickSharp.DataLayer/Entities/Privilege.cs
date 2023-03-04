@@ -15,8 +15,8 @@ namespace ClickSharp.DataLayer.Entities
         public int RoleId { get; set; }
 
         [ForeignKey("UserId")]
-        public User? User { get; set; }
+        public virtual User? User { get; set; }
         [ForeignKey("RoleId")]
-        public Role? Role { get; set; }
+        public virtual Role? Role { get; set; }
     }
 }
