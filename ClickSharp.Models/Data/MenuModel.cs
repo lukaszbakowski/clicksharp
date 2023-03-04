@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 
 namespace ClickSharp.Models.Data
 {
-    public class MenuModel 
+    public class MenuModel
     {
         public int Id { get; set; }
         public int Index { get; set; } = 0;
         public int? ParentId { get; set; }
         public int? PageId { get; set; }
         [StringLength(50)]
+        [RegularExpression(@"^[a-zA-Z ]+$")]
         public string DisplayName { get; set; } = string.Empty;
     }
 }
