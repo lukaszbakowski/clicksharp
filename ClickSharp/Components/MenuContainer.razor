@@ -57,6 +57,9 @@
 <div @ondrop=DropBack style="width:290px;height:30px;" class="bg-danger text-center" ondragover="event.preventDefault()">
     drop here to exclude from menu
 </div>
+<div @ondrop=DeleteItem style="width:290px;height:30px;" class="bg-warning text-center" ondragover="event.preventDefault()">
+    drop here to delete item
+</div>
 
 @code {
     private void DropBack()
@@ -68,7 +71,31 @@
             {
                 dbMenuItem.Index = 0;
                 dbMenuItem.ParentId = null;
-                dbContext.SaveChanges();
+                items.Remove(_item);
+                for (int i = 0; i < items.Count; i++)
+                {
+                    Menu? dbItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == items[i].Id);
+                    if (dbItem != null)
+                    {
+                        dbItem.Index = i;
+                    }
+                }
+                dbContext?.SaveChanges();
+                _item = null;
+                IsActive = null;
+                StateHasChanged();
+            }
+        }
+    }
+    private async void DeleteItem()
+    {
+        if (_item != null)
+        {
+            Menu? dbMenuItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == _item.Id);
+            if (dbMenuItem != null)
+            {
+                dbContext?.Menu?.Remove(dbMenuItem);
+                await dbContext?.SaveChangesAsync();
                 _item = null;
                 IsActive = null;
                 StateHasChanged();

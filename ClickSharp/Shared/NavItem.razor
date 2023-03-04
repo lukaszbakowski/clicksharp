@@ -1,0 +1,62 @@
+﻿@inject ClickSharpContext dbContext
+
+
+
+@if(_models.Count > 0)
+{
+    <li class="dropdown-submenu">
+        <a class="dropdown-item dropdown-toggle" href="@_url">@_displayName</a>
+        <ul class="dropdown-menu">
+            @foreach (var item in _models)
+            {
+                <NavItem Model="item" />
+            }
+        </ul>
+    </li>
+} else
+{
+    <li><a class="dropdown-item" href="@_url">@_displayName</a></li>
+}
+
+
+
+@code {
+    [Parameter]
+    public MenuModel? Model { get; set; }
+
+    private string _displayName = string.Empty;
+    private string _url = "javascript:;";
+    private List<MenuModel> _models = new();
+
+    protected override void OnInitialized()
+    {
+        if (Model != null)
+        {
+            _displayName = Model.DisplayName;
+            if (dbContext != null)
+            {
+                if (Model.PageId != null)
+                {
+                    string? url = dbContext.Pages?.Where(x => x.Id == Model.PageId).Select(x => x.Url).FirstOrDefault();
+                    _url = url != null ? url : _url;
+                }
+                List<Menu>? models = dbContext.Menu?.Where(x => x.ParentId == Model.Id).ToList();
+                if (models != null)
+                {
+                    foreach(var model in models)
+                    {
+                        _models.Add(new MenuModel
+                        {
+                            DisplayName = model.DisplayName,
+                            Id = model.Id,
+                            Index = model.Index,
+                            PageId = model.PageId,
+                            ParentId = model.PageId
+                        });
+                    }
+                }
+            }
+        }
+        base.OnInitialized();
+    }
+}
