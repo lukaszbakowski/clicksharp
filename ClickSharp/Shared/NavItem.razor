@@ -1,21 +1,45 @@
 ﻿@inject ClickSharpContext dbContext
 
 
-
-@if(_models.Count > 0)
+@if (SubMenu)
 {
-    <li class="dropdown-submenu">
-        <a class="dropdown-item dropdown-toggle" href="@_url">@_displayName</a>
-        <ul class="dropdown-menu">
-            @foreach (var item in _models)
-            {
-                <NavItem Model="item" />
-            }
-        </ul>
-    </li>
-} else
+    @if (_models.Count > 0)
+    {
+        <li class="dropdown-submenu">
+            <a class="dropdown-item dropdown-toggle" href="@_url">@_displayName</a>
+            <ul class="dropdown-menu">
+                @foreach (var item in _models)
+                {
+                    <NavItem Model="item" SubMenu />
+                }
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li><a class="dropdown-item" href="@_url">@_displayName</a></li>
+    }
+}
+else
 {
-    <li><a class="dropdown-item" href="@_url">@_displayName</a></li>
+    @if (_models.Count > 0)
+    {
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="@_url" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@_displayName</a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                @foreach (var item in _models)
+                {
+                    <NavItem Model="item" SubMenu />
+                }
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="@_url">@_displayName</a>
+        </li>
+    }
 }
 
 
@@ -23,6 +47,8 @@
 @code {
     [Parameter]
     public MenuModel? Model { get; set; }
+    [Parameter]
+    public bool SubMenu { get; set; } = false;
 
     private string _displayName = string.Empty;
     private string _url = "javascript:;";
@@ -43,16 +69,16 @@
                 List<Menu>? models = dbContext.Menu?.Where(x => x.ParentId == Model.Id).ToList();
                 if (models != null)
                 {
-                    foreach(var model in models)
+                    foreach (var model in models)
                     {
                         _models.Add(new MenuModel
-                        {
-                            DisplayName = model.DisplayName,
-                            Id = model.Id,
-                            Index = model.Index,
-                            PageId = model.PageId,
-                            ParentId = model.PageId
-                        });
+                            {
+                                DisplayName = model.DisplayName,
+                                Id = model.Id,
+                                Index = model.Index,
+                                PageId = model.PageId,
+                                ParentId = model.PageId
+                            });
                     }
                 }
             }
