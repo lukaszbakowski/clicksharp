@@ -72,5 +72,28 @@
 </header>
 
 @code {
+    private List<MenuModel> _childModels = new();
+    protected override void OnInitialized()
+    {
+        List<Menu>? parentChilds = dbContext.Menu?.Where(x => x.DisplayName == "INDEX").FirstOrDefault()?.Childrens;
 
+        if (parentChilds != null)
+        {
+            foreach(var child in parentChilds)
+            {
+                _childModels.Add(
+                    new MenuModel
+                    {
+                        Id = child.Id,
+                        DisplayName = child.DisplayName,
+                        Index = child.Index,
+                        PageId = child.PageId,
+                        ParentId = child.ParentId
+                    }
+                );
+            }
+        }
+
+        base.OnInitialized();
+    }
 }
