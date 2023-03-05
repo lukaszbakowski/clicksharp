@@ -13,7 +13,7 @@ namespace ClickSharp.Models.Data
         public int Id { get; set; }
         [StringLength(50)]
         [RegularExpression(@"^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$")]
-        [RegularExpression("https://uibakery.io/regex-library/url-regex-csharp")]
+        //[RegularExpression("https://uibakery.io/regex-library/url-regex-csharp")]
         public string Url { get; set; } = string.Empty;
         [StringLength(50)]
         public string Title { get; set; } = string.Empty;

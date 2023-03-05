@@ -1,6 +1,7 @@
 ﻿@inherits MenuBase
 @namespace ClickSharp.Components
 @using ClickSharp.Models.Data
+@inject ClickSharpContext dbContext
 
 @*<li draggable="true" @ondragstart=DragStarted class="nav-item">
     <a ondragover="event.preventDefault()" draggable="false" class="nav-link">
@@ -12,21 +13,21 @@
     </a>
 </li>*@
 
-<li ondragover="event.preventDefault()" draggable="true" class="nav-item" @ondragstart=DragStarted data-toggle="dropdown">
-    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" ondragover="event.preventDefault()" draggable="false">
-                @if (MenuData != null)
+<li ondragover="event.preventDefault()" draggable="true" class="dropdown-submenu" @ondragstart=DragStarted data-toggle="dropdown">
+    <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" ondragover="event.preventDefault()" draggable="false">
+        @if (MenuData != null)
         {
             @MenuData.DisplayName
             @MenuData.Index
         }
     </a>
-    <ul>
+    <ul class="dropdown-menu">
         @if (items.Count > 0)
         {
             string isActive;
             isActive = (IsActive == 0) ? "bg-success" : "";
             <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(0)"
-            class="text-white @isActive" style="width:10px;">
+            class="dropdown-item text-white @isActive" style="width:10px;">
                 &nbsp;
             </li>
             @for (int i = 0; i < items.Count; i++)
@@ -35,18 +36,55 @@
                 var currentIndex = i + 1;
                 isActive = (IsActive == currentIndex) ? "bg-success" : "";
                 <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(currentIndex)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(currentIndex)"
-            class="text-white @isActive" style="width:10px;">&nbsp;</li>
+            class="dropdown-item text-white @isActive" style="width:10px;">&nbsp;</li>
             }
         }
         else
         {
-            <li ondragover="event.preventDefault()" draggable="false" style="width:100%; height:30px" @ondrop="()=>OnDrop(0)">
+            <li ondragover="event.preventDefault()" draggable="false" class="dropdown-item" style="width:100px; height:30px" @ondrop="()=>OnDrop(0)">
                 &nbsp;
             </li>
         }
     </ul>
 </li>
 
-@code {
 
+
+@code {
+    protected override void OnInitialized()
+    {
+        //ReloadItems();
+        base.OnInitialized();
+    }
+
+    //protected override void ReloadItems()
+    //{
+
+    //    elementsToDrag.Clear();
+    //    items.Clear();
+
+    //    if (dbContext.Menu != null)
+    //    {
+    //        List<Menu>? menu = dbContext.Menu.Where(x => x.ParentId == MenuData.Id).OrderBy(x => x.Index).ToList();
+
+    //        if (menu != null)
+    //        {
+    //            foreach (var item in menu)
+    //            {
+    //                if (item.ParentId == 0)
+    //                {
+    //                    items.Add(
+    //                        new MenuModel
+    //                            {
+    //                                Id = item.Id,
+    //                                Index = item.Index,
+    //                                DisplayName = item.DisplayName,
+    //                                PageId = item.PageId,
+    //                                ParentId = item.ParentId
+    //                            });
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 }

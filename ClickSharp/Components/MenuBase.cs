@@ -67,6 +67,7 @@ namespace ClickSharp.Components
                     }
                     elementsToDrag.Remove(_item);
                     _item.Index = targetIndex;
+                    _item.ParentId = MenuData?.Id;
 
                     items.Add(_item);
                 }
@@ -84,14 +85,18 @@ namespace ClickSharp.Components
                     if (dbMenuItem != null)
                     {
                         dbMenuItem.Index = item.Index;
+                        dbMenuItem.ParentId = item.ParentId;
                     }
                 }
                 dbContext.SaveChanges();
             }
             _item = null;
             IsActive = null;
-            StateHasChanged();
+            ReloadItems();
         }
+
+        protected virtual void ReloadItems() { }
+
         [Inject]
         private ClickSharpContext dbContext { get; set; }
         [Parameter]

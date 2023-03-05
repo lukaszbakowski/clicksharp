@@ -38,4 +38,26 @@
         }
         base.OnInitialized();
     }
+    protected override bool ShouldRender()
+    {
+        if (param == null)
+        {
+            Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == 1);
+            if (dbPage != null)
+            {
+                content = dbPage.Content;
+                pageTitle = dbPage.Title;
+            }
+        }
+        else
+        {
+            Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Url == param);
+            if (dbPage != null)
+            {
+                content = dbPage.Content;
+                pageTitle = dbPage.Title;
+            }
+        }
+        return base.ShouldRender();
+    }
 }

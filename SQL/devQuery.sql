@@ -8,3 +8,15 @@ select * from Privileges
 --INSERT INTO Roles (Name) Values ('admin')
 --INSERT INTO Roles (Name, UserId) Values ('CS.Admin', 1)
 --INSERT INTO Privileges (UserId,RoleId) Values (1,1)
+
+select * from menu
+select * from pages
+
+--SET IDENTITY_INSERT Menu ON
+--GO
+
+--insert into menu (id, [Index],DisplayName) values (0, 0, 'MAIN')
+
+--SET IDENTITY_INSERT Menu OFF
+
+--insert into menu ([Index],ParentId,DisplayName) values (0, 3007, 'tralala')

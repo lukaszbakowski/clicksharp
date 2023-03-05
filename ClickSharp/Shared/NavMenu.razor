@@ -14,7 +14,7 @@
 </nav>
 <header class="text-bg-dark">
     <nav class="navbar navbar-expand-md navbar-dark bg-dark container">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="/">ClickSharp</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -23,7 +23,7 @@
                 <li class="nav-item active">
                     <a class="nav-link active" href="#">Home</a>
                 </li>
-                <li class="nav-item">
+@*                <li class="nav-item">
                     <a class="nav-link" href="javascript:;">Link</a>
                 </li>
                 <li class="nav-item">
@@ -65,7 +65,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Link</a>
-                </li>
+                </li>*@
                 @foreach(var childModel in _childModels)
                 {
                     <NavItem Model="childModel" />
@@ -79,7 +79,9 @@
     private List<MenuModel> _childModels = new();
     protected override void OnInitialized()
     {
-        List<Menu>? parentChilds = dbContext.Menu?.Where(x => x.DisplayName == "INDEX").FirstOrDefault()?.Childrens;
+        //List<Menu>? parentChilds = dbContext.Menu?.Where(x => x.DisplayName == "MAIN").FirstOrDefault().Childrens;
+        List<Menu>? parentChilds = dbContext.Menu?.Where(x => x.ParentId == 0).OrderBy(x=> x.Index).ToList();
+
 
         if (parentChilds != null)
         {
