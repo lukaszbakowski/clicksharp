@@ -87,4 +87,8 @@ a, .btn-link {
 .dropdown-menu > li > a:hover:after {
     text-decoration: underline;
     transform: rotate(-90deg);
-} 
+}
+
+.drop-space {
+    height: 7px;
+}

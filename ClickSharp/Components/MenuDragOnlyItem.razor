@@ -1,0 +1,37 @@
+﻿@inherits MenuBase
+@namespace ClickSharp.Components
+@using ClickSharp.Models.Data
+
+<li ondragover="event.preventDefault()" draggable="true" class="list-group-item" @ondragstart=DragStarted @ondragend=OnDragEnded>
+    <div class="" href="#" role="button" ondragover="event.preventDefault()" draggable="false">
+        @if (MenuData != null)
+        {
+            <span>@MenuData.DisplayName </span>
+            <span>index: </span>
+            <span>@MenuData.Index </span>
+            <span>id: </span>
+            @MenuData.Id
+        }
+    </div>
+</li>
+
+@code {
+
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        //ReloadItems();
+    }
+    protected override Task OnInitializedAsync()
+    {
+        if(_state.Items.ContainsKey(MenuData.Id))
+        {
+            items = _state.Items[MenuData.Id];
+        }
+        
+        return base.OnInitializedAsync();
+    }
+}

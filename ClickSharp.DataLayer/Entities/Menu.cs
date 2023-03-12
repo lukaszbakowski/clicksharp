@@ -14,6 +14,7 @@ namespace ClickSharp.DataLayer.Entities
         public virtual Page? Page { get; set; }
         [ForeignKey("ParentId")]
         public virtual Menu? Parent { get; set; }
-        public virtual List<Menu>? Childrens { get; set; }
+        [ForeignKey("Id")]
+        public virtual ICollection<Menu> Childrens { get; set; } = new List<Menu>();
     }
 }

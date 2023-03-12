@@ -3,70 +3,70 @@
 @using ClickSharp.Components
 @using System.Linq
 @using ClickSharp.Helpers
-@inject ClickSharpContext dbContext
+@implements IDisposable
 
 
 
-<header class="text-bg-dark">
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark container">
-        <a class="navbar-brand" href="/">ClickSharp</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul ondragover="event.preventDefault()" draggable="false" class="navbar-nav">
-                @if (items.Count > 0)
+<ul ondragover="event.preventDefault()" draggable="false" class="list-group list-group-flush" style="min-width:100px;">
+    @if (items.Count > 0)
                 {
                     string isActive;
                     isActive = (IsActive == 0) ? "bg-success" : "";
                     <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(0)"
-                    class="text-white @isActive" style="width:10px;">
+                    class="list-group-item drop-space @isActive" style="">
                         &nbsp;
                     </li>
-                    @for (int i = 0; i < items.Count; i++)
+        @for (int i = 0; i < items.Count; i++)
                     {
-                        <MenuItem MenuData="@items[i]" @bind-Item=_item />
+            <MenuItem MenuData="@items[i]" @bind-Item=DragItem ExecuteParentRefreshFromChild="ParentRefresh" />
                         var currentIndex = i + 1;
                         isActive = (IsActive == currentIndex) ? "bg-success" : "";
                         <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(currentIndex)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(currentIndex)"
-                    class="text-white @isActive" style="width:10px;">&nbsp;</li>
+                            class="list-group-item drop-space @isActive" style="">&nbsp;</li>
                     }
                 }
                 else
                 {
-                    <li ondragover="event.preventDefault()" draggable="false" style="width:100%; height:30px" @ondrop="()=>OnDrop(0)">
+                    string isActive;
+                    isActive = (IsActive == 0) ? "bg-success" : "";
+                    <li ondragover="event.preventDefault()" class="list-group-item drop-space @isActive" draggable="false" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave style="" @ondrop="()=>OnDrop(0)">
                         &nbsp;
                     </li>
                 }
             </ul>
-        </div>
-    </nav>
-</header>
 
+                        <div class="row">
+    <div @ondrop=DropBack style="width:290px;height:30px;" class="col-6 bg-warning text-center" ondragover="event.preventDefault()">
+        drop here to exclude from menu
+    </div>
+    <div @ondrop=DeleteItem style="width:290px;height:30px;" class="col-6 bg-danger text-center" ondragover="event.preventDefault()">
+        drop here to delete item
+    </div>
+            </div>
+
+            <h2>Not included items</h2>
 
 @foreach (var element in elementsToDrag)
 {
-    <ClickSharp.Components.MenuItem @bind-Item=_item MenuData="element" />
+    <ul ondragover="event.preventDefault()" draggable="false" class="list-group list-group-flush" style="min-width:100px;">
+    <ClickSharp.Components.MenuDragOnlyItem @bind-Item=DragItem MenuData="element" />
+    </ul>
 }
 
-<div @ondrop=DropBack style="width:290px;height:30px;" class="bg-danger text-center" ondragover="event.preventDefault()">
-    drop here to exclude from menu
-</div>
-<div @ondrop=DeleteItem style="width:290px;height:30px;" class="bg-warning text-center" ondragover="event.preventDefault()">
-    drop here to delete item
-</div>
+
 
 @code {
-    private void DropBack()
+    private async void DropBack()
     {
-        if (_item != null)
+        if (DragItem != null)
         {
-            Menu? dbMenuItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == _item.Id);
+            _FIRED_METHOD = true;
+            Menu? dbMenuItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == DragItem.Id);
             if (dbMenuItem != null)
             {
                 dbMenuItem.Index = 0;
                 dbMenuItem.ParentId = null;
-                items.Remove(_item);
+                items.Remove(DragItem);
                 for (int i = 0; i < items.Count; i++)
                 {
                     Menu? dbItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == items[i].Id);
@@ -75,34 +75,56 @@
                         dbItem.Index = i;
                     }
                 }
-                dbContext?.SaveChanges();
-                _item = null;
+                await dbContext?.SaveChangesAsync();
+                DragItem = null;
                 IsActive = null;
-                ReloadItems();
+                //ReloadItems();
+                await _state.MenuStateHasChanged();
+                if (_state.Items.ContainsKey(0))
+                    items = _state.Items[0];
+                if (_state.Items.ContainsKey(-1))
+                    elementsToDrag = _state.Items[-1];
                 StateHasChanged();
             }
+            _FIRED_METHOD = false;
         }
+        DragItem = null;
+        IsActive = null;
+        _LOCK = false;
     }
-    private void DeleteItem()
+    private async void DeleteItem()
     {
-        if (_item != null)
+        if (DragItem != null)
         {
-            Menu? dbMenuItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == _item.Id);
+            _FIRED_METHOD = true;
+            Menu? dbMenuItem = dbContext?.Menu?.FirstOrDefault(x => x.Id == DragItem.Id);
             if (dbMenuItem != null)
             {
                 dbContext?.Menu?.Remove(dbMenuItem);
-                dbContext?.SaveChanges();
-                _item = null;
+                await dbContext?.SaveChangesAsync();
+                DragItem = null;
                 IsActive = null;
-                ReloadItems();
+                //ReloadItems();
+                await _state.MenuStateHasChanged();
+                if (_state.Items.ContainsKey(0))
+                    items = _state.Items[0];
+                if (_state.Items.ContainsKey(-1))
+                    elementsToDrag = _state.Items[-1];
                 StateHasChanged();
             }
+            _FIRED_METHOD = false;
         }
+        DragItem = null;
+        IsActive = null;
+        _LOCK = false;
     }
 
     protected override void OnInitialized()
     {
-        elementsToDrag.Clear();
+        //elementsToDrag.Clear();
+
+        base.OnInitialized();
+        _state.OnChange += StateHasChanged;
         MenuData = new MenuModel
             {
                 DisplayName = "MAIN",
@@ -133,49 +155,70 @@
         //        });
 
 
-        ReloadItems();
+        //ReloadItems();
 
-        base.OnInitialized();
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await _state.MenuStateHasChanged();
+        if(_state.Items.ContainsKey(0))
+            items = _state.Items[0];
+        if(_state.Items.ContainsKey(-1))
+            elementsToDrag = _state.Items[-1];
+        await base.OnInitializedAsync();
     }
     protected override void ReloadItems()
     {
 
-        elementsToDrag.Clear();
-        items.Clear();
+        //elementsToDrag.Clear();
+        //items.Clear();
 
-        if (dbContext.Menu != null)
-        {
-            List<Menu> menu = dbContext.Menu.Where(x => x.DisplayName != "MAIN").OrderBy(x => x.Index).ToList();
+        //if (dbContext.Menu != null)
+        //{
+        //    List<Menu>? menu = dbContext.Menu.Where(x => x.ParentId == 0 || x.ParentId == null).OrderBy(x => x.Index).ToList();
 
-            foreach (var item in menu)
-            {
-                if (item.ParentId == 0)
-                {
-                    items.Add(
-                        new MenuModel
-                            {
-                                Id = item.Id,
-                                Index = item.Index,
-                                DisplayName = item.DisplayName,
-                                PageId = item.PageId,
-                                ParentId = item.ParentId
-                            });
-                }
-                else
-                {
+        //    if(menu != null)
+        //    {
+        //        menu.RemoveAll(x => x.Id == 0);
+        //        foreach (var item in menu)
+        //        {
+        //            if (item.ParentId == 0)
+        //            {
+        //                items.Add(
+        //                    new MenuModel
+        //                        {
+        //                            Id = item.Id,
+        //                            Index = item.Index,
+        //                            DisplayName = item.DisplayName,
+        //                            PageId = item.PageId,
+        //                            ParentId = item.ParentId
+        //                        });
+        //            }
+        //            else
+        //            {
 
-                    elementsToDrag.Add(
-                        new MenuModel
-                            {
-                                Id = item.Id,
-                                Index = item.Index,
-                                DisplayName = item.DisplayName,
-                                PageId = item.PageId,
-                                ParentId = item.ParentId
-                            }
-                        );
-                }
-            }
-        }
+        //                elementsToDrag.Add(
+        //                    new MenuModel
+        //                        {
+        //                            Id = item.Id,
+        //                            Index = item.Index,
+        //                            DisplayName = item.DisplayName,
+        //                            PageId = item.PageId,
+        //                            ParentId = item.ParentId
+        //                        }
+        //                    );
+        //            }
+        //        }
+        //    }
+        //}
+    }
+    //protected override void OnInitialized()
+    //{
+    //    base.OnInitialized();
+    //    _state.OnChange += StateHasChanged;
+    //}
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
     }
 }

@@ -9,11 +9,11 @@
     <ValidationSummary />
 
     <div class="form-outline mb-4">
-        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_userForm.Email" />
+        <InputText type="email" id="emailForm" class="form-control form-control-lg" @bind-Value="_userForm.Email" disabled />
         <label class="form-label" for="emailForm">Email address</label>
     </div>
     <div class="form-outline mb-4">
-        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_userForm.Password" />
+        <InputText type="password" id="passwordForm" class="form-control form-control-lg" @bind-Value="_userForm.Password" disabled />
         <label class="form-label" for="passwordForm">Password</label>
     </div>
     <div>
@@ -27,7 +27,7 @@
             </p>
         }
     </div>
-    <button type="submit" class="btn btn-primary btn-lg btn-block">Add new User</button>
+    <button type="submit" class="btn btn-primary btn-lg btn-block" disabled>Add new User</button>
 
 </EditForm>
 
