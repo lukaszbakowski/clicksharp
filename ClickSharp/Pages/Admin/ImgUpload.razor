@@ -1,6 +1,9 @@
 ﻿@attribute [Route(AppUrls.Admin.EN.ImageUpload)]
 @attribute [Route(AppUrls.Admin.PL.ZaladujObraz)]
 @inject IConfiguration _configuration
+@using ClickSharp.Helpers
+@using System.Text
+@using System.Text.RegularExpressions
 
 
 <h3>Upload Images</h3>
@@ -18,12 +21,12 @@
     {
         string url = $"{AppUrls.AppImages}/{img.Key}";
         string isActive = img.Value ? "border-dark" : "border-light";
-        
-            <figure class="col-xl-3 col-lg-6 col-12 figure">
+
+        <figure class="col-xl-3 col-lg-6 col-12 figure">
             <img src="@url" alt="@img.Key" @onclick="() => MarkImage(img.Key)" class="figure-img img-fluid border border-5 @isActive rounded-3" />
             <figcaption class="figure-caption text-center text-break">@img.Key</figcaption>
-            </figure>
-        
+        </figure>
+
     }
 </div>
 <div class="d-flex m-3">
@@ -77,22 +80,80 @@
     }
     private async Task UploadSubmit()
     {
+        int maxFileSize = 3 * 1024 * 1024; //3MB max size
+
         if (files.Count > 0 && baseDirectory != null)
         {
             foreach (var file in files)
             {
+                int error = 0;
                 try
                 {
-                    string fileName = $"{DateTime.Now.ToString("yyyyMMddHHmmssfffffff")}-{file.Name}";
+                    string name = file.Name.Replace(" ", "");
 
+                    error--;
+                    Regex reg = new Regex(@"^[\w\-. ]+$");
+                    if (!reg.IsMatch(name))
+                        throw new Exception();
+
+                    error--;
+                    if (file.Size > maxFileSize)
+                        throw new Exception();
+
+                    string[] extensions = new string[]
+                    {
+                        ".jpg",
+                        ".jpeg",
+                        ".gif",
+                        ".png"
+                    };
+                    error--;
+                    bool test = false;
+                    foreach(var ext in extensions)
+                    {
+                        string fileExtension = Path.GetExtension(name);
+                        if (fileExtension.Equals(ext, StringComparison.OrdinalIgnoreCase))
+                            test = true;
+                    }
+                    if (!test)
+                        throw new Exception("bad extension.");
+
+                    error--;
+                    string fileName = $"{DateTime.Now.ToString("yyyyMMddHHmmssfffffff")}-{name}";
+                    error--;
                     await using FileStream fs = new($"{baseDirectory}\\{fileName}", FileMode.Create);
-                    await using var stream = file.OpenReadStream();
-                    await stream.CopyToAsync(fs);
-                    images.Add(fileName, false);
+                    error--;
+                    await using var stream = file.OpenReadStream(maxFileSize);
+
+                    
+                    //test = false;
+                    //using (MemoryStream ms = new MemoryStream())
+                    //{
+                    //    byte[] buffer = new byte[maxFileSize];
+                    //    int read;
+                    //    while ((read = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                    //    {
+                    //        ms.Write(buffer, 0, read);
+                    //    }
+                    //    if (ms.ToArray().IsImage())
+                    //    {
+                    //        test = true;
+                    //    } else
+                    //    {
+                    //        throw new Exception("file is not an image");
+                    //    }
+                    //}
+                    //if (test)
+                    //{
+                        error--;
+                        await stream.CopyToAsync(fs);
+                        error--;
+                        images.Add(fileName, false);
+                    //}
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.ToString());
+                    Console.WriteLine($"{ex.ToString()} code_error: {error}");
                 }
             }
             files.Clear();
@@ -129,4 +190,5 @@
             }
         }
     }
+
 }

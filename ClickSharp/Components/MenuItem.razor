@@ -1,7 +1,6 @@
 ﻿@inherits MenuBase
 @namespace ClickSharp.Components
 @using ClickSharp.Models.Data
-@inject ClickSharpContext dbContext
 
 @*<li draggable="true" @ondragstart=DragStarted class="nav-item">
     <a ondragover="event.preventDefault()" draggable="false" class="nav-link">
@@ -12,79 +11,94 @@
         }
     </a>
 </li>*@
+<li ondragover="event.preventDefault()" draggable="false" style="@(IsBlock? "display: block" : "display:none")">
 
-<li ondragover="event.preventDefault()" draggable="true" class="dropdown-submenu" @ondragstart=DragStarted data-toggle="dropdown">
-    <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" ondragover="event.preventDefault()" draggable="false">
-        @if (MenuData != null)
-        {
-            @MenuData.DisplayName
-            @MenuData.Index
-        }
-    </a>
-    <ul class="dropdown-menu">
-        @if (items.Count > 0)
-        {
-            string isActive;
-            isActive = (IsActive == 0) ? "bg-success" : "";
-            <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(0)"
-            class="dropdown-item text-white @isActive" style="width:10px;">
-                &nbsp;
-            </li>
-            @for (int i = 0; i < items.Count; i++)
+
+<li ondragover="event.preventDefault()" draggable="true" class="list-group-item" @ondragstart=DragStarted @ondragend=OnDragEnded>
+        <div class="" href="#" role="button" ondragover="event.preventDefault()" draggable="false">
+                @if (MenuData != null)
+                {
+                    <span>@MenuData.DisplayName </span>
+                    <span>index: </span>
+                    <span>@MenuData.Index </span>
+                    <span>id: </span>
+                    @MenuData.Id
+                }
+        </div>
+    </li>
+
+    <ul ondragover="event.preventDefault()" class="ms-3 list-group list-group-flush">
+            @if (items.Count > 0)
             {
-                <MenuItem MenuData="@items[i]" @bind-Item=_item />
-                var currentIndex = i + 1;
-                isActive = (IsActive == currentIndex) ? "bg-success" : "";
-                <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(currentIndex)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(currentIndex)"
-            class="dropdown-item text-white @isActive" style="width:10px;">&nbsp;</li>
-            }
-        }
-        else
-        {
-            <li ondragover="event.preventDefault()" draggable="false" class="dropdown-item" style="width:100px; height:30px" @ondrop="()=>OnDrop(0)">
+                string isActive;
+                isActive = (IsActive == 0) ? "bg-success" : "";
+            <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(0)"
+            class="list-group-item drop-space @isActive" style="">
                 &nbsp;
             </li>
-        }
+                @for (int i = 0; i < items.Count; i++)
+                {
+            <MenuItem MenuData="@items[i]" @bind-Item=DragItem ExecuteParentRefreshFromChild="ParentRefresh" />
+                    var currentIndex = i + 1;
+                    isActive = (IsActive == currentIndex) ? "bg-success" : "";
+                <li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(currentIndex)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(currentIndex)"
+            class="list-group-item drop-space @isActive" style="">&nbsp;</li>
+                }
+            }
+            else
+            {
+                string isActive;
+                isActive = (IsActive == 0) ? "bg-success" : "";
+            <li ondragover="event.preventDefault()" class="list-group-item drop-space @isActive" draggable="false" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave style="" @ondrop="()=>OnDrop(0)">
+                &nbsp;
+            </li>
+            }
     </ul>
 </li>
 
 
 
 @code {
+
     protected override void OnInitialized()
     {
-        //ReloadItems();
         base.OnInitialized();
+        
+        //ReloadItems();
     }
 
-    //protected override void ReloadItems()
-    //{
+    protected override Task OnInitializedAsync()
+    {
+        if(_state.Items.ContainsKey(MenuData.Id))
+            items = _state.Items[MenuData.Id];
+        return base.OnInitializedAsync();
+    }
 
-    //    elementsToDrag.Clear();
-    //    items.Clear();
+    protected override void ReloadItems()
+    {
 
-    //    if (dbContext.Menu != null)
-    //    {
-    //        List<Menu>? menu = dbContext.Menu.Where(x => x.ParentId == MenuData.Id).OrderBy(x => x.Index).ToList();
+        //elementsToDrag.Clear();
+        //items.Clear();
 
-    //        if (menu != null)
-    //        {
-    //            foreach (var item in menu)
-    //            {
-    //                if (item.ParentId == 0)
-    //                {
-    //                    items.Add(
-    //                        new MenuModel
-    //                            {
-    //                                Id = item.Id,
-    //                                Index = item.Index,
-    //                                DisplayName = item.DisplayName,
-    //                                PageId = item.PageId,
-    //                                ParentId = item.ParentId
-    //                            });
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
+        //if (dbContext.Menu != null && MenuData != null)
+        //{
+        //    List<Menu>? menu = dbContext.Menu.Where(x => x.ParentId == MenuData.Id).OrderBy(x => x.Index).ToList();
+
+        //    if (menu != null)
+        //    {
+        //        foreach (var item in menu)
+        //        {
+        //            items.Add(
+        //                new MenuModel
+        //                    {
+        //                        Id = item.Id,
+        //                        Index = item.Index,
+        //                        DisplayName = item.DisplayName,
+        //                        PageId = item.PageId,
+        //                        ParentId = item.ParentId
+        //                    });
+        //        }
+        //    }
+        //}
+    }
 }

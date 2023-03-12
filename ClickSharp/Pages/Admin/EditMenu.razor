@@ -2,14 +2,15 @@
 @attribute [Route(AppUrls.Admin.PL.EdytujMenu)]
 @using ClickSharp.Components;
 @inject ClickSharpContext dbContext
+@using System.Text.RegularExpressions;
+
 
 <h1>DragDrop demo</h1>
 <ul ondragover="event.preventDefault();" style="margin:20px">
-
 </ul>
 
 <MenuContainer />
-    
+
 <h3>Add menu item</h3>
 <form>
     <div class="form-group">
@@ -31,11 +32,11 @@
     </div>
 </form>
 
+
 @code
 {
     private MenuModel newMenu = new();
     private List<Page> pages = new();
-
 
     protected override void OnInitialized()
     {
@@ -48,38 +49,50 @@
     }
     private void AddNewMenu()
     {
-        if (!string.IsNullOrEmpty(newMenu.DisplayName) && newMenu.PageId > 0)
+        try
         {
-            if (dbContext.Menu != null)
+            if (!string.IsNullOrEmpty(newMenu.DisplayName) && !string.IsNullOrWhiteSpace(newMenu.DisplayName))
             {
-                dbContext.Menu.Add(
-                    new Menu
-                        {
-                            DisplayName = newMenu.DisplayName,
-                            PageId = newMenu.PageId,
-                            Index = 0
-                        }
-                );
-                dbContext.SaveChanges();
-                newMenu = new();
-                StateHasChanged();
+                string cleanString = newMenu.DisplayName.Trim();
+
+                if (cleanString.Length < 3)
+                    throw new Exception();
+
+                Regex reg = new Regex("^[a-zA-Z0-9-_ ]+");
+                if (!reg.IsMatch(cleanString))
+                    throw new Exception();
+
+                if (dbContext.Menu != null)
+                {
+                    if (newMenu.PageId != null && newMenu.PageId > 0)
+                    {
+                        dbContext.Menu.Add(
+                            new Menu
+                                {
+                                    DisplayName = cleanString,
+                                    PageId = newMenu.PageId,
+                                    Index = 0
+                                }
+                        );
+                        dbContext.SaveChanges();
+                    }
+                    else
+                    {
+                        dbContext.Menu.Add(
+                            new Menu
+                                {
+                                    DisplayName = cleanString,
+                                    Index = 0
+                                }
+                        );
+                        dbContext.SaveChanges();
+                    }
+                    newMenu = new();
+                    StateHasChanged();
+                }
             }
-        }
-        else if (!string.IsNullOrEmpty(newMenu.DisplayName))
-        {
-            if (dbContext.Menu != null)
-            {
-                dbContext.Menu.Add(
-                    new Menu
-                        {
-                            DisplayName = newMenu.DisplayName,
-                            Index = 0
-                        }
-                );
-                dbContext.SaveChanges();
-                newMenu = new();
-                StateHasChanged();
-            }
-        }
+        } catch {}
+
+
     }
 }

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using ClickSharp.Configuration;
+using ClickSharp.Components;
 
 var imgBaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), @"Images");
 
@@ -33,6 +34,7 @@ builder.Services.AddDbContext<ClickSharpContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"));
 });
 builder.Services.AddScoped<AuthenticationStateProvider, CustomStateProvider>();
+builder.Services.AddScoped<MenuState>();
 
 var app = builder.Build();
 

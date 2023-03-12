@@ -21,8 +21,12 @@
     </div>
     <button type="submit" class="btn btn-primary btn-lg btn-block">Save changes</button>
 </EditForm>
+<div class="m-5">
+    <p class="text-warning">@((MarkupString)_errorMsg)</p>
+</div>
 
 @code {
+    private string _errorMsg = string.Empty;
     private int? userId;
     private ChangePasswordForm _changePasswordForm = new();
 
@@ -47,12 +51,32 @@
 
     private async Task EditPasswordSubmit()
     {
-        string hashedPassword = new HashHelper().GetHash(_changePasswordForm.Password);
-        User? dbUser = dbContext.Users?.FirstOrDefault(x=> x.Id == userId);
-        if (dbUser != null)
+        _errorMsg = string.Empty;
+        int error = 0;
+        try
         {
-            dbUser.Password = hashedPassword;
-            await dbContext.SaveChangesAsync();
+            error--;
+            string hashedPassword = new HashHelper().GetHash(_changePasswordForm.Password);
+            error--;
+            User? dbUser = dbContext.Users?.FirstOrDefault(x => x.Id == userId);
+            error--;
+            if (dbUser != null)
+            {
+                error--;
+                dbUser.Password = hashedPassword;
+                error--;
+                await dbContext.SaveChangesAsync();
+            }
+            error = 1;
+        } catch
+        {
+            _errorMsg = $"error_code: {error}";
+        } finally
+        {
+            if(error == 1)
+            {
+                _errorMsg = $"<span class=\"text-success\">success</span>";
+            }
         }
         await Task.CompletedTask;
     }

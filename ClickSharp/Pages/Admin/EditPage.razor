@@ -3,36 +3,39 @@
 @using TinyMCE.Blazor
 @using System.Text
 @inject ClickSharpContext dbContext
+@using System.Text.RegularExpressions;
 
 
 <h3>Add new or edit existing pages</h3>
 <form>
-<div class="form-group">
-    <label for="urlInput">Url</label>
-    <input id="urlInput" type="text" @bind=currentPage.Url disabled=@isIndex class="form-control" />
-</div>
-<div class="form-group">
-    <label for="titleInput">Title</label>
-    <input id="titleInput" type="text" @bind=currentPage.Title class="form-control" />
-</div>
-<div class="form-group">
-    <label for="descriptionInput">Description</label>
-    <input id="descriptionInput" type="text" @bind=currentPage.Description class="form-control" />
-</div>
-<div class="form-group">
-    <label for="pages">Page</label>
-    <select id="pages" @onchange=LoadPage @bind-value=PageId @bind-value:event="oninput" class="form-control" >
-        <option value="">new page</option>
-        @foreach (var item in pages)
-        {
-            <option value=@item.Id>@item.Title</option>
-        }
-    </select>
-</div>
+    <div class="form-group">
+        <label for="urlInput">Url</label>
+        <input id="urlInput" type="text" @bind=currentPage.Url disabled=@isIndex class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="titleInput">Title</label>
+        <input id="titleInput" type="text" @bind=currentPage.Title class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="descriptionInput">Description</label>
+        <input id="descriptionInput" type="text" @bind=currentPage.Description class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="pages">Page</label>
+        <select id="pages" @onchange=LoadPage @bind-value=PageId @bind-value:event="oninput" class="form-control">
+            <option value="">new page</option>
+            @foreach (var item in pages)
+            {
+                <option value=@item.Id>@item.Title</option>
+            }
+        </select>
+    </div>
 </form>
 
 <div>
-    @PageId
+
+    <p class="text-warning">@_errorMsg</p>
+
 </div>
 
 
@@ -45,6 +48,7 @@
 <button @onclick=DeletePage disabled=@isIndex class="btn btn-danger">Delete</button>
 
 @code {
+    private string _errorMsg = string.Empty;
     private bool isIndex = false;
     private List<Page> pages = new();
     private int? pageId;
@@ -69,7 +73,8 @@
                 if (pageId == 1)
                 {
                     isIndex = true;
-                } else
+                }
+                else
                 {
                     isIndex = false;
                 }
@@ -86,81 +91,187 @@
     protected override void OnInitialized()
     {
         LoadEditor();
+        Reload(true);
+
+        base.OnInitialized();
+    }
+
+    private void Reload(bool firstInit)
+    {
+
         if (dbContext.Pages != null)
         {
             pages = dbContext.Pages.ToList();
         }
 
-        base.OnInitialized();
+        if (!firstInit)
+            StateHasChanged();
     }
 
     private void SaveContent()
     {
-        if (PageId == null)
+        _errorMsg = string.Empty;
+        int error = 0;
+        try
         {
-            if (dbContext.Pages != null)
+            string? title = currentPage.Title;
+            string? description = currentPage.Description;
+            string? url = currentPage.Url;
+            string? content = $"{currentPage.Content}";
+
+            error--;
+            if (title == null || description == null || url == null || content == null)
+                throw new Exception();
+
+            error--;
+            title = title.Trim();
+
+            error--;
+            description = description.Trim();
+
+            error--;
+            url = url.Replace(" ", "");
+
+            error--;
+            if (url.Length < 3)
+                throw new Exception();
+
+            error--;
+            Regex reg = new Regex("^[a-zA-Z0-9-_ ]+");
+            if (!reg.IsMatch(title))
+                throw new Exception();
+
+            error--;
+            if (!reg.IsMatch(description))
+                throw new Exception();
+
+            error--;
+            if (!Uri.IsWellFormedUriString(url, UriKind.RelativeOrAbsolute))
+                throw new Exception();
+
+            if (PageId == null)
             {
-                dbContext.Pages.Add(
-                    new Page
+                error--;
+                if (dbContext.Pages != null)
+                {
+                    error--;
+                    List<Page>? dbPage = dbContext.Pages?.Where(x => x.Url == url).ToList();
+                    if (dbPage != null && dbPage.Count == 0)
+                    {
+                        error--;
+                        dbContext.Pages.Add(
+                            new Page
+                                {
+                                    Title = title,
+                                    Description = description,
+                                    Url = url,
+                                    CreationTime = DateTime.UtcNow,
+                                    Content = content
+                                }
+                        );
+                        error--;
+                        dbContext.SaveChanges();
+                        currentPage = new();
+                        PageId = null;
+                        Reload(false);
+                    }
+                }
+            }
+            else
+            {
+                error--;
+                Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == pageId);
+                if (dbPage != null)
+                {
+                    error--;
+                    if (dbPage.Url == url)
+                    {
+                        error--;
+                        dbPage.Title = title;
+                        dbPage.Description = description;
+                        dbPage.ModificationTime = DateTime.UtcNow;
+                        dbPage.Content = content;
+                        error--;
+                        dbContext.SaveChanges();
+                        currentPage = new();
+                        PageId = null;
+                        Reload(false);
+                    }
+                    else
+                    {
+                        error--;
+                        List<Page>? dbPageTest = dbContext.Pages?.Where(x => x.Url == url).ToList();
+                        if (dbPageTest != null && dbPageTest.Count == 0)
                         {
-                            Title = currentPage.Title,
-                            Description = currentPage.Description,
-                            Url = currentPage.Url,
-                            CreationTime = DateTime.UtcNow,
-                            Content = currentPage.Content
+                            error--;
+                            dbPage.Title = title;
+                            dbPage.Description = description;
+                            dbPage.Url = url;
+                            dbPage.ModificationTime = DateTime.UtcNow;
+                            dbPage.Content = content;
+                            error--;
+                            dbContext.SaveChanges();
+                            currentPage = new();
+                            PageId = null;
+                            Reload(false);
                         }
-                );
-                dbContext.SaveChanges();
-                currentPage = new();
-                PageId = null;
-                StateHasChanged();
+                    }
+                }
             }
-        } else
-        {
-            Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == pageId);
-            if(dbPage != null)
-            {
-                dbPage.Title = currentPage.Title;
-                dbPage.Description = currentPage.Description;
-                dbPage.Url = currentPage.Url;
-                dbPage.ModificationTime = DateTime.UtcNow;
-                dbPage.Content = currentPage.Content;
-                dbContext.SaveChanges();
-                currentPage = new();
-                PageId = null;
-                StateHasChanged();
-            }
+            error = 1;
         }
+        catch
+        {
+            _errorMsg = $"error_code: {error}";
+        }
+
     }
     private void LoadPage()
     {
-        if (IdExist)
+        try
         {
-            Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == pageId);
-            if (dbPage != null)
+            if (IdExist)
             {
-                currentPage.Id = dbPage.Id;
-                currentPage.Title = dbPage.Title;
-                currentPage.Description = dbPage.Description;
-                currentPage.Content = dbPage.Content;
-                currentPage.Url = dbPage.Url;
+                Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == pageId);
+                if (dbPage != null)
+                {
+                    currentPage.Id = dbPage.Id;
+                    currentPage.Title = dbPage.Title;
+                    currentPage.Description = dbPage.Description;
+                    currentPage.Content = dbPage.Content;
+                    currentPage.Url = dbPage.Url;
+                }
             }
         }
+        catch { }
     }
     private void DeletePage()
     {
-        if (IdExist && pageId != 1)
+        try
         {
-            Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == pageId);
-            if (dbPage != null)
+            if (IdExist && pageId != 1)
             {
-                dbContext.Pages?.Remove(dbPage);
-                dbContext.SaveChanges();
-                currentPage = new();
-                PageId = null;
-                StateHasChanged();
+                Page? dbPage = dbContext.Pages?.FirstOrDefault(x => x.Id == pageId);
+                if (dbPage != null)
+                {
+                    List<Menu>? dbMenu = dbContext.Menu?.Where(x => x.PageId == pageId).ToList();
+                    if (dbMenu != null && dbMenu.Count > 0)
+                    {
+                        foreach (var menuItem in dbMenu)
+                        {
+                            dbContext?.Menu?.Remove(menuItem);
+                        }
+                    }
+                    dbContext.Pages?.Remove(dbPage);
+                    dbContext.SaveChanges();
+                    currentPage = new();
+                    PageId = null;
+                    Reload(false);
+                }
             }
         }
+        catch { }
+
     }
 }
 
