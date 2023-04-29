@@ -10,14 +10,15 @@ namespace ClickSharp.Models.Forms
 {
     public class LoginForm : ILogin
     {
-        [Required(ErrorMessage = "Email is required")]
+        [Required]
         [StringLength(50)]
-        [EmailAddress(ErrorMessage = "please use correct email address")]
+        [EmailAddress]
         [RegularExpression(@"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$")]
         public string Email { get; set; } = string.Empty;
-        [Required(ErrorMessage = "Password is required")]
-        //[StringLength(255, ErrorMessage = "Password must be between 5 and 255 characters", MinimumLength = 5)]
-        [DataType(DataType.Password)]
+
+        [Required]
+        [StringLength(255, MinimumLength = 8)]
+        [RegularExpression("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\\W_]).{6,}$")]
         public string Password { get; set; } = string.Empty;
     }
     public class ChangePasswordForm

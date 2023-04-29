@@ -64,7 +64,7 @@ else
                 if (Model.PageId != null)
                 {
                     string? url = dbContext.Pages?.Where(x => x.Id == Model.PageId).Select(x => x.Url).FirstOrDefault();
-                    _url = url != null ? $"/{url}" : _url;
+                    _url = url != null ? $"{url}" : _url;
                 }
                 List<Menu>? models = dbContext.Menu?.Where(x => x.ParentId == Model.Id).ToList();
                 if (models != null)

@@ -10,8 +10,9 @@ namespace ClickSharp.Auth
         string secret = "secretKeyjzdfjskjlfdsljkfsldjkfslkjflsdkjf";
         string issuer = "ClickSharp";
         int expires = 30;
-        public string GenerateToken(IEnumerable<Claim> claims)
+        public string GenerateToken(IEnumerable<Claim> claims, string? ip)
         {
+            var clientIp = ip != null ? ip : string.Empty;
             List<Claim> _claims = new();
             foreach (var claim in claims)
             {
@@ -21,10 +22,10 @@ namespace ClickSharp.Auth
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(_claims),
-                Expires = DateTime.UtcNow.AddDays(expires),
+                Expires = DateTime.UtcNow.AddMinutes(expires),
                 Issuer = issuer,
                 SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)),
+                    new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret + clientIp)),
                     SecurityAlgorithms.HmacSha256Signature)
             };
 
@@ -35,9 +36,10 @@ namespace ClickSharp.Auth
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        public bool ValidateCurrentToken(string token)
+        public bool ValidateCurrentToken(string token, string? ip)
         {
-            var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret));
+            var clientIp = ip != null? ip : string.Empty;
+            var mySecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret + clientIp));
 
             var tokenHandler = new JwtSecurityTokenHandler();
 

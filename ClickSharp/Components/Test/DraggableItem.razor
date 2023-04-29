@@ -1,0 +1,133 @@
+﻿
+@namespace ClickSharp.Components.Test
+@using ClickSharp.Models.Data
+@inject MenuState2 _state
+@implements IDisposable
+
+
+
+@if(Item != null)
+{
+    <li ondragover="event.preventDefault()" draggable="false" style="@(IsBlock? "display: block" : "display:none")">
+
+        @if(!Container)
+        {
+        <li ondragover="event.preventDefault()" draggable="true" class="list-group-item" @ondragstart=DragStarted @ondragend=OnDragEnded>
+            <div class="" href="#" role="button" ondragover="event.preventDefault()" draggable="false">
+                    @if (Item.MenuData != null)
+                    {
+                    <span>@Item.MenuData.DisplayName </span>
+                    <span>index: </span>
+                    <span>@Item.MenuData.Index </span>
+                    <span>id: </span>
+                        @Item.MenuData.Id
+                    }
+            </div>
+        </li>
+        }
+
+        <ul ondragover="event.preventDefault()" class="ms-3 list-group list-group-flush">
+                @if (Item.Childrens != null && Item.Childrens.Count > 0)
+                {
+                    string isActive;
+                    isActive = (IsActive == 0) ? "bg-success" : "";
+                            <DroppablePlaceholder Index="0" OnDropEvent="OnDropEventChanged" />
+                @*<li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(0)"
+        class="list-group-item drop-space @isActive" style="">
+                    &nbsp;
+                </li>*@
+                    @for (int i = 0; i < Item.Childrens.Count; i++)
+                    {
+                <DraggableItem Item="Item.Childrens[i]" @bind-ItemIdToHide=ChildIdToHide />
+                        @if (ChildIdToHide != Item.Childrens[i].MenuData.Id)
+                        {
+                            var currentIndex = i + 1;
+                            isActive = (IsActive == currentIndex) ? "bg-success" : "";
+                    <DroppablePlaceholder Index="currentIndex" OnDropEvent="OnDropEventChanged" />
+                            @*<li ondragover="event.preventDefault()" @ondragenter="()=>OnDragEnter(currentIndex)" @ondragleave=OnDragLeave @ondrop="()=>OnDrop(currentIndex)"
+                                class="list-group-item drop-space @isActive" style="">&nbsp;</li>*@
+                        }
+                    }
+                }
+                else
+                {
+                    <DroppablePlaceholder Index="0" OnDropEvent="OnDropEventChanged" />
+@*                    string isActive;
+                    isActive = (IsActive == 0) ? "bg-success" : "";
+                <li ondragover="event.preventDefault()" class="list-group-item drop-space @isActive" draggable="false" @ondragenter="()=>OnDragEnter(0)" @ondragleave=OnDragLeave style="" @ondrop="()=>OnDrop(0)">
+                    &nbsp;
+                </li>*@
+                }
+        </ul>
+        
+        @*<DroppablePlaceholder />*@
+    </li>
+}
+
+
+
+
+@code {
+    [Parameter]
+    public bool Container { get; set; } = false;
+    [Parameter]
+    public DraggableItemData? Item { get; set; }
+    protected int? IsActive;
+    private bool IsBlock = true;
+    private int ChildIdToHide = 0;
+    [Parameter]
+    public int ItemIdToHide { get; set; } = 0;
+    [Parameter]
+    public EventCallback<int> ItemIdToHideChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _state.OnChange += StateHasChanged;
+        base.OnInitialized();
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+
+        return base.OnInitializedAsync();
+    }
+    protected void OnDragEnded()
+    {
+        _state.Dragged = null;
+        IsBlock = true;
+        //_state.Success = false;
+        Console.WriteLine("eeeee");
+        ItemIdToHide = 0;
+        ItemIdToHideChanged.InvokeAsync(ItemIdToHide);
+        //_state.MenuStateHasChanged();
+    }
+    protected void DragStarted()
+    {
+        Console.WriteLine($"parent id from component: {Item.Parent.MenuData.Id}");
+        _state.Dragged = Item;
+        IsBlock = false;
+        ItemIdToHide = Item.MenuData.Id;
+        ItemIdToHideChanged.InvokeAsync(ItemIdToHide);
+        //_state.Success = true;
+        //_state.MenuStateHasChanged();
+    }
+    //protected void OnDragEnter(int index)
+    //{
+    //    IsActive = index;
+    //    Console.WriteLine($"new parent will be: {Item.MenuData.Id}");
+    //}
+    protected void OnDragLeave()
+    {
+        IsActive = null;
+    }
+    protected void OnDropEventChanged(int targetIndex)
+    {
+        IsActive = null;
+        if (Item != null)
+            _state.OnDrop(Item, targetIndex);
+    }
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
+    }
+}

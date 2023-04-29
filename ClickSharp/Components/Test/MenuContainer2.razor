@@ -1,0 +1,62 @@
+﻿@namespace ClickSharp.Components.Test
+@using ClickSharp.Models.Data
+@using ClickSharp.Components
+@using System.Linq
+@using ClickSharp.Helpers
+@implements IDisposable
+@inject MenuState2 _state
+
+
+@*<p>
+    @_state.Container.MenuData.Id
+</p>*@
+@if (_state.Container.Childrens != null)
+{
+    @foreach (var item in _state.Container.Childrens)
+    {
+        @if(item.MenuData.Id == 2)
+        {
+            <div class="border border-primary rounded m-5 p-5">
+                <p>
+                    Drop items below and build your menu
+                </p>
+                <DraggableItem Item="item" Container />
+            </div>
+            
+        } else
+        {
+            <div class="border border-secondary rounded m-5 p-5">
+                <p>
+                    Not included items
+                </p>
+                <DraggableItem Item="item" Container />
+            </div>
+        } 
+    }
+}
+<div @ondrop=DeleteItem style="width:290px;" class="col-8 bg-danger text-center text-light border border-secondary rounded m-3 d-flex justify-content-center align-items-center" ondragover="event.preventDefault()">
+    <p class="p-2">drop here to delete item</p>
+</div>
+
+
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        _state.OnChange += StateHasChanged;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        _state.MenuStateHasChanged();
+        await base.OnInitializedAsync();
+    }
+    private void DeleteItem()
+    {
+        _state.OnDelete();
+    }
+    public void Dispose()
+    {
+        _state.OnChange -= StateHasChanged;
+    }
+}

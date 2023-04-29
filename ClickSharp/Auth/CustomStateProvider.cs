@@ -26,16 +26,27 @@ namespace ClickSharp.Auth
     {
 
 #if DEBUG
-        private ClaimsIdentity? _claimsIdentity = new ClaimsIdentity(new Identity { AuthenticationType = "authorizedUser", IsAuthenticated = true, Name = "Admin" }, new List<Claim>() { new Claim(ClaimTypes.Role, "admin")});
+        private ClaimsIdentity? _claimsIdentity = new ClaimsIdentity(
+            new Identity
+            {
+                AuthenticationType = "authorizedUser",
+                IsAuthenticated = true,
+                Name = "Admin"
+            },
+            new List<Claim>() {
+                new Claim(ClaimTypes.Role, "admin")
+            });
 #else
         private ClaimsIdentity? _claimsIdentity;
 #endif
         private readonly ClickSharpContext _context;
         private readonly ProtectedSessionStorage _protectedSessionStorage;
-        public CustomStateProvider(ProtectedSessionStorage protectedSessionStorage, ClickSharpContext Context)
+        private readonly ClientContext _clientContext;
+        public CustomStateProvider(ProtectedSessionStorage protectedSessionStorage, ClickSharpContext Context, ClientContext clientContext)
         {
             _context = Context;
             _protectedSessionStorage = protectedSessionStorage;
+            _clientContext = clientContext;
         }
         public async override Task<AuthenticationState> GetAuthenticationStateAsync()
         {
@@ -54,7 +65,7 @@ namespace ClickSharp.Auth
                         string? value = token.Value?.ToString();
                         if (value != null)
                         {
-                            if (tokenHandler.ValidateCurrentToken(value))
+                            if (tokenHandler.ValidateCurrentToken(value, _clientContext.ClientIpAddr))
                             {
                                 List<Claim> claims = (List<Claim>)tokenHandler.GetClaims(value);
                                 _claimsIdentity = new ClaimsIdentity(claims, "authorizedUser");
@@ -66,19 +77,23 @@ namespace ClickSharp.Auth
                                     Console.WriteLine(claim.Value.ToString());
                                 }
                                 return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(_claimsIdentity)));
-                            } else
+                            }
+                            else
                             {
                                 throw new Exception("token is invalid");
                             }
-                        } else
+                        }
+                        else
                         {
                             throw new Exception("token has no value");
                         }
-                    } else
+                    }
+                    else
                     {
                         throw new Exception("token not success");
                     }
-                } catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
@@ -94,34 +109,65 @@ namespace ClickSharp.Auth
                 ClickSharp.DataLayer.Entities.User? getUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email && x.Password == new HashHelper().GetHash(user.Password));
                 if (getUser != null)
                 {
-                    
-                    List<Claim> claims = new()
+                    var start = getUser.LastAuth;
+                    if (getUser.Attempts < 5 || start.AddMinutes(15) < DateTime.Now)
                     {
-                        new Claim(nameof(ClaimType.Email), getUser.Email),
-                        new Claim(nameof(ClaimType.Name), getUser.Name),
-                        new Claim(nameof(ClaimType.Id), getUser.Id.ToString())
-                    };
-
-                    if (_context.Privileges != null)
-                    {
-                        getUser.Privileges = await _context.Privileges.Where(x => x.UserId == getUser.Id).Include(x => x.Role).ToListAsync();
-
-                        foreach (var privilege in getUser.Privileges)
+                        List<Claim> claims = new()
                         {
-                            Console.WriteLine(privilege.Role.Name);
-                            claims.Add(new Claim(ClaimTypes.Role, privilege.Role.Name));
+                            new Claim(nameof(ClaimType.Email), getUser.Email),
+                            new Claim(nameof(ClaimType.Name), getUser.Name),
+                            new Claim(nameof(ClaimType.Id), getUser.Id.ToString())
+                        };
+
+                        if (_context.Privileges != null)
+                        {
+                            getUser.Privileges = await _context.Privileges.Where(x => x.UserId == getUser.Id).Include(x => x.Role).ToListAsync();
+
+                            foreach (var privilege in getUser.Privileges)
+                            {
+                                Console.WriteLine(privilege.Role.Name);
+                                claims.Add(new Claim(ClaimTypes.Role, privilege.Role.Name));
+                            }
                         }
+
+                        await _protectedSessionStorage.SetAsync("Token", new TokenHandler().GenerateToken(claims, _clientContext.ClientIpAddr));
+
+                        Identity identity = new Identity { AuthenticationType = "authorizedUser", IsAuthenticated = true, Name = getUser.Name };
+
+                        _claimsIdentity = new ClaimsIdentity(identity, claims);
+                        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+                        isSuccess = true;
                     }
+                }
+                if (isSuccess)
+                {
+                    getUser.LastAuth = DateTime.Now;
+                    getUser.IpAddr = _clientContext.ClientIpAddr != null ? _clientContext.ClientIpAddr : string.Empty;
+                    getUser.Attempts = 0;
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    getUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
+                    if (getUser != null)
+                    {
+                        var start = getUser.LastAuth;
+                        if (start.AddMinutes(15) > DateTime.Now)
+                        {
+                            getUser.Attempts++;
+                        }
+                        else
+                        {
+                            getUser.Attempts = 1;
+                        }
+                        getUser.LastAuth = DateTime.Now;
+                        getUser.IpAddr = _clientContext.ClientIpAddr != null ? _clientContext.ClientIpAddr : string.Empty;
 
-                    await _protectedSessionStorage.SetAsync("Token", new TokenHandler().GenerateToken(claims));
-
-                    Identity identity = new Identity { AuthenticationType = "authorizedUser", IsAuthenticated = true, Name = getUser.Name };
-
-                    _claimsIdentity = new ClaimsIdentity(identity,claims);
-                    NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
-                    isSuccess = true;
+                        _context.SaveChanges();
+                    }
                 }
             }
+
             await Task.Delay(500);
             return await Task.FromResult(isSuccess);
         }

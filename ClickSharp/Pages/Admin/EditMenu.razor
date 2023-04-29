@@ -1,15 +1,18 @@
 ﻿@attribute [Route(AppUrls.Admin.EN.EditMenu)]
 @attribute [Route(AppUrls.Admin.PL.EdytujMenu)]
 @using ClickSharp.Components;
+@using ClickSharp.Components.Test;
 @inject ClickSharpContext dbContext
 @using System.Text.RegularExpressions;
+@inject MenuState2 _state
 
 
 <h1>DragDrop demo</h1>
 <ul ondragover="event.preventDefault();" style="margin:20px">
 </ul>
 
-<MenuContainer />
+@*<MenuContainer />*@
+<MenuContainer2 />
 
 <h3>Add menu item</h3>
 <form>
@@ -31,6 +34,11 @@
         <button class="btn btn-primary" type="submit" @onclick=AddNewMenu>add new menu item</button>
     </div>
 </form>
+
+
+
+
+
 
 
 @code
@@ -64,14 +72,16 @@
 
                 if (dbContext.Menu != null)
                 {
+                    int lastIndex = dbContext.Menu.Where(x => x.Id > 3).Count<Menu>();
                     if (newMenu.PageId != null && newMenu.PageId > 0)
                     {
                         dbContext.Menu.Add(
                             new Menu
                                 {
                                     DisplayName = cleanString,
+                                    ParentId = 3,
                                     PageId = newMenu.PageId,
-                                    Index = 0
+                                    Index = lastIndex
                                 }
                         );
                         dbContext.SaveChanges();
@@ -82,12 +92,14 @@
                             new Menu
                                 {
                                     DisplayName = cleanString,
-                                    Index = 0
+                                    ParentId = 3,
+                                    Index = lastIndex
                                 }
                         );
                         dbContext.SaveChanges();
                     }
                     newMenu = new();
+                    _state.MenuStateHasChanged();
                     StateHasChanged();
                 }
             }

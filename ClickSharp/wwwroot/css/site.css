@@ -65,7 +65,7 @@ a, .btn-link {
     }
 
 .navtext-supergray {
-    color: grey!important;
+    color: grey !important;
 }
 
 
@@ -92,3 +92,34 @@ a, .btn-link {
 .drop-space {
     height: 7px;
 }
+
+@keyframes progress-bar-enter {
+    from {
+        height: 1px;
+    }
+    to {
+        height: 33px;
+    }
+}
+
+@keyframes progress-bar-leave {
+    from {
+        height: 33px;
+    }
+    to {
+        height: 1px;
+    }
+}
+
+.super-test-enter {
+    animation-name: progress-bar-enter;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
+}
+
+.super-test-leave {
+    animation-name: progress-bar-leave;
+    animation-fill-mode: forwards;
+    animation-duration: 1s;
+}
+

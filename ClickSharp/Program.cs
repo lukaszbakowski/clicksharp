@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.FileProviders;
 using ClickSharp.Configuration;
 using ClickSharp.Components;
+using ClickSharp.Components.Test;
+using ClickSharp.Workers;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 var imgBaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), @"Images");
 
@@ -29,14 +34,44 @@ builder.WebHost.UseWebRoot("wwwroot").UseStaticWebAssets();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddAuthorizationCore(); //<--
+string? dbHost = Environment.GetEnvironmentVariable("DB_HOST");
+string? dbName = Environment.GetEnvironmentVariable("DB_NAME");
+string? dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD");
+string connectionString = builder.Configuration.GetConnectionString("MsSql");
+if (dbHost != null && dbName != null && dbPassword != null)
+    connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword}";
 builder.Services.AddDbContext<ClickSharpContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MsSql"));
+    options.UseSqlServer(connectionString);
 });
 builder.Services.AddScoped<AuthenticationStateProvider, CustomStateProvider>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<ClientStore>();
+builder.Services.AddScoped<ClientContext>();
 builder.Services.AddScoped<MenuState>();
-
+builder.Services.AddScoped<MenuState2>();
+builder.Services.AddWorkersModule();
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        using var context = services.GetRequiredService<ClickSharpContext>();
+        RelationalDatabaseCreator? dbCreator = context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
+        if(dbCreator != null)
+        {
+#if DEBUG
+            await dbCreator.EnsureDeletedAsync();
+#endif
+            await dbCreator.EnsureCreatedAsync();
+        }
+    }
+    catch
+    {
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

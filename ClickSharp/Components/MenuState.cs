@@ -74,7 +74,7 @@ namespace ClickSharp.Components
                     Items.Add(-1, new List<MenuModel>());
                     foreach (var item in menu)
                     {
-                        if (item.ParentId == null && item.Id != 0)
+                        if (item.ParentId == null && item.Id != 1)
                             Items[-1].Add(item);
 
                         Items.Add(item.Id, new List<MenuModel>());

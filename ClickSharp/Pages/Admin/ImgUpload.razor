@@ -33,6 +33,10 @@
     <button @onclick="@DeleteImages" class="btn btn-primary btn-lg btn-block">Delete Selected</button>
 </div>
 
+@*@if(imgTest != null)
+{
+    <img src="@imgTest" alt="alt" />
+}*@
 
 
 
@@ -42,6 +46,7 @@
     private Dictionary<string, bool> images = new();
     private static string? baseDirectory;
     private List<string> imagesToDelete = new();
+    //private string? imgTest;
 
     protected override void OnInitialized()
     {
@@ -69,7 +74,23 @@
         {
             try
             {
-                files.Add(file);
+                byte[] fileContent = new byte[4];
+                using (var stream = file.OpenReadStream(file.Size)) {
+                    await stream.ReadAsync(fileContent, 0, 4);
+                }
+                var imgType = fileContent.IsImage(file.ContentType);
+                if (imgType != Extensions.ImageFormat.unknown)
+                {
+                    files.Add(file);
+                    //fileContent = new byte[file.Size];
+                    //using (var stream = file.OpenReadStream(file.Size))
+                    //{
+                    //    await stream.ReadAsync(fileContent, 0, (int)file.Size);
+                    //}
+                    //imgTest = $"data:image/{imgType};base64,{Convert.ToBase64String(fileContent)}";
+                }
+                else
+                    throw new Exception("not allowed format");
             }
             catch (Exception ex)
             {

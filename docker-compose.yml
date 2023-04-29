@@ -1,0 +1,34 @@
+version: '3.4'
+
+networks:
+  clicksharpapp:
+
+services:
+  clicksharpdb:
+    container_name: clicksharp-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - 8003:1443
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=123testV3ryStr0nkP@ssw0rt!
+    networks:
+      - clicksharpapp
+  clicksharp:
+    container_name: clicksharp-app
+    image: ${DOCKER_REGISTRY-}clicksharp
+    build:
+      context: .
+      dockerfile: ClickSharp/Dockerfile
+    ports:
+      - 8001:80
+      - 8002:443
+    depends_on:
+      - clicksharpdb
+    environment:
+      - DB_HOST=clicksharpdb
+      - DB_NAME=CS_TEST
+      - DB_PASSWORD=123testV3ryStr0nkP@ssw0rt!
+    networks:
+      - clicksharpapp
+

@@ -20,5 +20,8 @@ namespace ClickSharp.Models.Data
         public string Password { get; set; } = "123Example@Password";
         public DateTime CreationDate { get; set; } = DateTime.UtcNow;
         public UserStatus Status { get; set; } = UserStatus.IS_ACTIVE;
+        public int Attempts { get; set; } = 0;
+        public DateTime LastAuth { get; set; } = DateTime.UtcNow;
+        public string IpAddr { get; set; } = string.Empty;
     }
 }

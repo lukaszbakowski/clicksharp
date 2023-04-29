@@ -1,0 +1,40 @@
+﻿
+
+<li ondragover="event.preventDefault()" class="list-group-item drop-space mt-2 mb-2 @classStyle" draggable="false" style="">
+    <div class="magic" @ondragenter=OnDragEnter @ondragleave=OnDragLeave @ondrop=OnDrop>
+
+    </div>
+</li>
+
+@code {
+
+    private string classStyle = "";
+
+    [Parameter]
+    public int Index { get; set; }
+    [Parameter]
+    public EventCallback<int> OnDropEvent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+    private void OnDragEnter()
+    {
+        //classStyle = "super-test-enter bg-success";
+        classStyle = "bg-success";
+
+    }
+    private void OnDragLeave()
+    {
+        //classStyle = "super-test-leave";
+        classStyle = "";
+    }
+    private async void OnDrop()
+    {
+        //classStyle = "super-test-leave";
+        classStyle = "";
+        await OnDropEvent.InvokeAsync(Index);
+    }
+}
+

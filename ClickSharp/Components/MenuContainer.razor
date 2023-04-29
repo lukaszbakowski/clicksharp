@@ -128,9 +128,9 @@
         MenuData = new MenuModel
             {
                 DisplayName = "MAIN",
-                Id = 0,
+                Id = 1,
                 Index = 0,
-                PageId = 0,
+                PageId = 1,
                 ParentId = null
             };
         //    items.Add(new MenuModel
@@ -161,8 +161,8 @@
     protected override async Task OnInitializedAsync()
     {
         await _state.MenuStateHasChanged();
-        if(_state.Items.ContainsKey(0))
-            items = _state.Items[0];
+        if(_state.Items.ContainsKey(1))
+            items = _state.Items[1];
         if(_state.Items.ContainsKey(-1))
             elementsToDrag = _state.Items[-1];
         await base.OnInitializedAsync();

@@ -53,7 +53,7 @@ namespace ClickSharp.Services
             await Task.Delay(1000);
             await Task.CompletedTask;
         }
-
+        [Authorize(Roles = AppRoles.Admin)]
         public async Task ModifyUser(UserModel currentUser, UserModel newUser)
         {
             if (_context.Users != null)

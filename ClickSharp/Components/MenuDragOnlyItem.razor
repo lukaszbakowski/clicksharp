@@ -2,6 +2,7 @@
 @namespace ClickSharp.Components
 @using ClickSharp.Models.Data
 
+
 <li ondragover="event.preventDefault()" draggable="true" class="list-group-item" @ondragstart=DragStarted @ondragend=OnDragEnded>
     <div class="" href="#" role="button" ondragover="event.preventDefault()" draggable="false">
         @if (MenuData != null)
@@ -34,4 +35,8 @@
         
         return base.OnInitializedAsync();
     }
+    //public void Dispose()
+    //{
+    //    _state.OnChange -= StateHasChanged;
+    //}
 }

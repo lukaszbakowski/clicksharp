@@ -4,6 +4,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>5ea6af49-e465-4480-97ba-f43c10e11127</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,10 +17,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Components\MenuContainer2.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Components\Test\DroppablePlaceholder.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Components\Test\DroppablePlaceholder.razor.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
     <PackageReference Include="TinyMCE" Version="6.3.1" />
     <PackageReference Include="TinyMCE.Blazor" Version="1.0.4" />
   </ItemGroup>
@@ -28,6 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Components\Test\MenuContainer2.razor" />
     <None Include="Components\MenuContainer.razor" />
   </ItemGroup>
 
