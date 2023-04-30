@@ -19,14 +19,14 @@ Steps on Azure:
 
 ## To run Docker example with Windows PowerShell ->
   1. Requipments
-		- .NET installed in local machine to crate a dev cert
+		- .NET installed in local machine to crate a dev cert -> https://dotnet.microsoft.com/en-us/download
 		- Docker Desktop
   2. To run commands in PowerShell
       - creating develop cert (clean it first if there is already present)
 
 		```powershell
 			dotnet dev-certs https --clean
-			dotnet dev-certs https -ep "$env:USERPROFILE\.aspnet\https\clicksharpapp.pfx"  -p 321haslo0
+			dotnet dev-certs https -ep "$env:USERPROFILE\.aspnet\https\clicksharpapp.pfx" -p 321haslo0
 			dotnet dev-certs https --trust
 		```
 		please notice password must match with docker-compose.yml configuration
