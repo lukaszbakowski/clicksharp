@@ -92,9 +92,9 @@
                 else
                     throw new Exception("not allowed format");
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                //Console.WriteLine(ex.ToString());
             }
         }
         await Task.CompletedTask;
@@ -172,9 +172,9 @@
                         images.Add(fileName, false);
                     //}
                 }
-                catch (Exception ex)
+                catch //(Exception ex)
                 {
-                    Console.WriteLine($"{ex.ToString()} code_error: {error}");
+                    //Console.WriteLine($"{ex.ToString()} code_error: {error}");
                 }
             }
             files.Clear();

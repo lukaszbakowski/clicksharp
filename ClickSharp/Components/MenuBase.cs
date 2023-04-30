@@ -20,7 +20,7 @@ namespace ClickSharp.Components
         public static MenuModel? DragItem { get; set; }
         protected void OnDragEnter(int index)
         {
-            Console.WriteLine(index.ToString());
+            //Console.WriteLine(index.ToString());
             IsActive = index;
             StateHasChanged();
         }
@@ -142,8 +142,8 @@ namespace ClickSharp.Components
                                 items.Swap(i, i - 1);
                             }
                         }
-                        Console.WriteLine("parent: " + DragItem.Id.ToString());
-                        Console.WriteLine("child:" + MenuData.Id.ToString());
+                        //Console.WriteLine("parent: " + DragItem.Id.ToString());
+                        //Console.WriteLine("child:" + MenuData.Id.ToString());
                         hasChanged = true;
                     }
                 }
@@ -220,7 +220,7 @@ namespace ClickSharp.Components
                     }
                     await dbContext.SaveChangesAsync();
 
-                    Console.WriteLine("parentID: " + MenuData.Id);
+                    //Console.WriteLine("parentID: " + MenuData.Id);
                 } else if (menu != null && menu.Count == 0)
                 {
                     items.Clear();
@@ -228,9 +228,11 @@ namespace ClickSharp.Components
             }
             await _state.MenuStateHasChanged();
 
+            if (MenuData == null)
+                return;
             if (_state.Items.ContainsKey(MenuData.Id))
             {
-                Console.WriteLine("do i runnnnnnnnnnnnnnnnnnnn");
+                //Console.WriteLine("do i runnnnnnnnnnnnnnnnnnnn");
                 items = _state.Items[MenuData.Id];
             }
 
@@ -256,7 +258,7 @@ namespace ClickSharp.Components
         //        items.Remove(DragItem);
         //        StateHasChanged();
         //    }
-        //    Console.WriteLine("testtetststststs");
+        //    //Console.WriteLine("testtetststststs");
         //    await Task.CompletedTask;
         //}
 

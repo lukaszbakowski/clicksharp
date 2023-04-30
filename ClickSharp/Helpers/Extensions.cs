@@ -45,8 +45,8 @@ namespace ClickSharp.Helpers
             };
             //foreach (var hex in fileToValidate)
             //{
-            //Console.WriteLine($"mime: {mineType}");
-            //Console.WriteLine($"hex: {BitConverter.ToString(fileToValidate)}");
+            ////Console.WriteLine($"mime: {mineType}");
+            ////Console.WriteLine($"hex: {BitConverter.ToString(fileToValidate)}");
             //}
             foreach(var allowedImg in allowedImages)
             {

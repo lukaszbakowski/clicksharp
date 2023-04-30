@@ -159,6 +159,8 @@
                     if (dbPage != null && dbPage.Count == 0)
                     {
                         error--;
+                        if (dbContext.Pages == null)
+                            return;
                         dbContext.Pages.Add(
                             new Page
                                 {

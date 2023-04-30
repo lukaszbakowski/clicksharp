@@ -8,7 +8,7 @@
 
 @if(Item != null)
 {
-    <li ondragover="event.preventDefault()" draggable="false" style="@(IsBlock? "display: block" : "display:none")">
+    <li ondragover="event.preventDefault()" draggable="false" style="@(IsBlock? "display: block" : "display:none")" >
 
         @if(!Container)
         {
@@ -96,14 +96,16 @@
         _state.Dragged = null;
         IsBlock = true;
         //_state.Success = false;
-        Console.WriteLine("eeeee");
+        //Console.WriteLine("eeeee");
         ItemIdToHide = 0;
         ItemIdToHideChanged.InvokeAsync(ItemIdToHide);
         //_state.MenuStateHasChanged();
     }
     protected void DragStarted()
     {
-        Console.WriteLine($"parent id from component: {Item.Parent.MenuData.Id}");
+        if (Item == null)
+            return;
+        //Console.WriteLine($"parent id from component: {Item.Parent.MenuData.Id}");
         _state.Dragged = Item;
         IsBlock = false;
         ItemIdToHide = Item.MenuData.Id;
@@ -114,7 +116,7 @@
     //protected void OnDragEnter(int index)
     //{
     //    IsActive = index;
-    //    Console.WriteLine($"new parent will be: {Item.MenuData.Id}");
+    //    //Console.WriteLine($"new parent will be: {Item.MenuData.Id}");
     //}
     protected void OnDragLeave()
     {

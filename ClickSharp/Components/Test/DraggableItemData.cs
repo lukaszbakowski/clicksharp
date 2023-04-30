@@ -1,13 +1,9 @@
 ﻿using ClickSharp.DataLayer;
 using ClickSharp.Models.Data;
-using ClickSharp.DataLayer;
 using ClickSharp.Helpers;
-using ClickSharp.Models.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore;
 using System.Xml.Linq;
-using ClickSharp.DataLayer.Entities;
-using ClickSharp.Helpers;
 
 namespace ClickSharp.Components.Test
 {
@@ -40,9 +36,9 @@ namespace ClickSharp.Components.Test
                     }
                 }
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
-                Console.WriteLine($"myError test: {ex.ToString()}");
+                //Console.WriteLine($"myError test: {ex.ToString()}");
             }
 
             return this;
@@ -81,7 +77,7 @@ namespace ClickSharp.Components.Test
                     {
                         if(left.Childrens.Remove(right))
                         {
-                            Console.WriteLine("removed success");
+                            //Console.WriteLine("removed success");
                         }
                             
                         left.Childrens = left.Childrens.OrderBy(x => x.MenuData.Index).ToList();
@@ -93,7 +89,7 @@ namespace ClickSharp.Components.Test
                 }
             } catch
             {
-                Console.WriteLine("error occured while -");
+                //Console.WriteLine("error occured while -");
                 throw;
             }
             

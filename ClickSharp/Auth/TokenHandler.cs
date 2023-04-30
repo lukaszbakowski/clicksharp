@@ -54,12 +54,12 @@ namespace ClickSharp.Auth
                     IssuerSigningKey = mySecurityKey
                 }, out SecurityToken validatedToken);
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
-                Console.WriteLine("token vailidation failed: {0}", ex);
+                //Console.WriteLine("token vailidation failed: {0}", ex);
                 return false;
             }
-            Console.WriteLine("token vailidation: success");
+            //Console.WriteLine("token vailidation: success");
             return true;
         }
         public ICollection<Claim> GetClaims(string token)

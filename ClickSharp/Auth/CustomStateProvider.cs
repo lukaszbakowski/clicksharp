@@ -69,12 +69,12 @@ namespace ClickSharp.Auth
                             {
                                 List<Claim> claims = (List<Claim>)tokenHandler.GetClaims(value);
                                 _claimsIdentity = new ClaimsIdentity(claims, "authorizedUser");
-                                Console.WriteLine("ok");
+                                //Console.WriteLine("ok");
                                 foreach (Claim claim in _claimsIdentity.Claims)
                                 {
-                                    Console.WriteLine(claim.ValueType.ToString());
-                                    Console.WriteLine(claim.Type.ToString());
-                                    Console.WriteLine(claim.Value.ToString());
+                                    //Console.WriteLine(claim.ValueType.ToString());
+                                    //Console.WriteLine(claim.Type.ToString());
+                                    //Console.WriteLine(claim.Value.ToString());
                                 }
                                 return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(_claimsIdentity)));
                             }
@@ -93,9 +93,9 @@ namespace ClickSharp.Auth
                         throw new Exception("token not success");
                     }
                 }
-                catch (Exception ex)
+                catch //(Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    //Console.WriteLine(ex.Message);
                 }
                 ClaimsIdentity anonymous = new ClaimsIdentity();
                 return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonymous)));
@@ -123,11 +123,13 @@ namespace ClickSharp.Auth
                         {
                             getUser.Privileges = await _context.Privileges.Where(x => x.UserId == getUser.Id).Include(x => x.Role).ToListAsync();
 
-                            foreach (var privilege in getUser.Privileges)
-                            {
-                                Console.WriteLine(privilege.Role.Name);
-                                claims.Add(new Claim(ClaimTypes.Role, privilege.Role.Name));
-                            }
+                            if(getUser.Privileges != null)
+                                foreach (var privilege in getUser.Privileges)
+                                {
+                                    //Console.WriteLine(privilege.Role.Name);
+                                    if(privilege.Role !=null)
+                                        claims.Add(new Claim(ClaimTypes.Role, privilege.Role.Name));
+                                }
                         }
 
                         await _protectedSessionStorage.SetAsync("Token", new TokenHandler().GenerateToken(claims, _clientContext.ClientIpAddr));
@@ -139,7 +141,7 @@ namespace ClickSharp.Auth
                         isSuccess = true;
                     }
                 }
-                if (isSuccess)
+                if (isSuccess && getUser != null)
                 {
                     getUser.LastAuth = DateTime.Now;
                     getUser.IpAddr = _clientContext.ClientIpAddr != null ? _clientContext.ClientIpAddr : string.Empty;

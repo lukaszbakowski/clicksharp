@@ -75,7 +75,7 @@ namespace ClickSharp.Components.Test
         }
         public async void OnDrop(DraggableItemData NewParent, int targetIndex)
         {
-            Console.WriteLine($"new parent will be: {NewParent.MenuData.Id}");
+            //Console.WriteLine($"new parent will be: {NewParent.MenuData.Id}");
             int error_code = 0;
             try
             {
@@ -105,20 +105,20 @@ namespace ClickSharp.Components.Test
                 error_code--;
                 NewParent += _dragged;
 
-                NewParent.Childrens.FirstOrDefault(x => x.MenuData.Id == _dragged.MenuData.Id).SetParent(NewParent);
+                NewParent.Childrens?.FirstOrDefault(x => x.MenuData.Id == _dragged.MenuData.Id)?.SetParent(NewParent);
 
                 error_code = 1;
 
             }
             catch
             {
-                Console.WriteLine($"ondrop error code: {error_code}");
+                //Console.WriteLine($"ondrop error code: {error_code}");
             }
             finally
             {
                 if (error_code == 1)
                 {
-                    Console.WriteLine($"ondrop success: {error_code}");
+                    //Console.WriteLine($"ondrop success: {error_code}");
                     Dragged = null;
                     if(await SaveChangedState())
                         NotifyStateChanged();
@@ -134,7 +134,7 @@ namespace ClickSharp.Components.Test
             if (_dbContext == null)
                 return await Task.FromResult(false);
 
-            Console.WriteLine("is working");
+            //Console.WriteLine("is working");
             List<Menu>? currentMenuList = _dbContext.Menu?.ToList();
             var newMenuList = ToPopulateChangedState(Container);
 
@@ -154,10 +154,10 @@ namespace ClickSharp.Components.Test
                                     if(itemToUpd.ParentId != item.ParentId || itemToUpd.Index != item.Index)
                                     {
                                         itemToUpd.ParentId = item.ParentId;
-                                        Console.WriteLine(item.ParentId);
+                                        //Console.WriteLine(item.ParentId);
                                         itemToUpd.Index = item.Index;
                                         _dbContext.Menu.Update(itemToUpd).State = EntityState.Modified;
-                                        Console.WriteLine("anything was to change");
+                                        //Console.WriteLine("anything was to change");
                                     }
                                 }
                             }
@@ -167,7 +167,7 @@ namespace ClickSharp.Components.Test
                     } catch
                     {
                         await dbTran.RollbackAsync();
-                        Console.WriteLine("is rollback");
+                        //Console.WriteLine("is rollback");
                     }
                 }
             else
