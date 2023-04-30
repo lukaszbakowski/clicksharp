@@ -66,6 +66,10 @@ using (var scope = app.Services.CreateScope())
             await dbCreator.EnsureDeletedAsync();
 #endif
             await dbCreator.EnsureCreatedAsync();
+            if(!await dbCreator.HasTablesAsync())
+            {
+                await dbCreator.CreateTablesAsync();
+            }
         }
     }
     catch
