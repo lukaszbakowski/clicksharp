@@ -26,7 +26,7 @@ Steps on Azure:
 
 		```powershell
 			dotnet dev-certs https --clean
-			dotnet dev-certs https -ep "$env:USERPROFILE\.aspnet\https\clicksharpapp.pfx" -p 321haslo0
+			dotnet dev-certs https -ep "$env:USERPROFILE\.aspnet\https\clicksharpapp.pfx" -p 321hAslo0
 			dotnet dev-certs https --trust
 		```
 		please notice password must match with docker-compose.yml configuration
