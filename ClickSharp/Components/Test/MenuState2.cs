@@ -238,7 +238,15 @@ namespace ClickSharp.Components.Test
                                 catch { }
                             }
                             await SaveChangedState();
-                            NotifyStateChanged();
+                            MenuStateHasChanged();
+                        }
+                    } else if (Container.Childrens.Exists(x => x.MenuData.Id == 2))
+                    {
+                        if (_dragged != null)
+                        {
+                            await _dragged.DeepRelease(Container.Childrens.First(x => x.MenuData.Id == 3));
+                            _dragged = null;
+                            MenuStateHasChanged();
                         }
                     }
         }
