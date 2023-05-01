@@ -16,6 +16,11 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.AspNetCore.HttpOverrides;
 
+for(int i = 60; i > 0; i--)
+{
+    await Task.Delay(1000);
+}
+
 var imgBaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), @"Images");
 
 if (!Directory.Exists(imgBaseDirectory))
