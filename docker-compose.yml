@@ -29,12 +29,12 @@ services:
       - DB_HOST=clicksharpdb
       - DB_NAME=CS_TEST
       - DB_PASSWORD=123testV3ryStr0nkP@ssw0rt!
-      - ASPNETCORE_HTTPS_PORT=8002
-      - ASPNETCORE_URLS=https://+;http://+:80
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=321hAslo0
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/clicksharpapp.pfx
-    volumes:
-      - ~/.aspnet/https:/https:ro
+      #- ASPNETCORE_HTTPS_PORT=8002
+      #- ASPNETCORE_URLS=https://+;http://+:80
+      #- ASPNETCORE_Kestrel__Certificates__Default__Password=321hAslo0
+      #- ASPNETCORE_Kestrel__Certificates__Default__Path=/https/clicksharpapp.pfx
+    #volumes:
+      #- ~/.aspnet/https:/https:ro
     networks:
       - clicksharpapp
 

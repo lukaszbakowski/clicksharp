@@ -14,6 +14,7 @@ using ClickSharp.Workers;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var imgBaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), @"Images");
 
@@ -29,6 +30,13 @@ AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
 
 var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseWebRoot("wwwroot").UseStaticWebAssets();
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+});
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -86,6 +94,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseForwardedHeaders();
 
 app.UseStaticFiles();
 app.UseStaticFiles(new StaticFileOptions()
