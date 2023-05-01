@@ -8,6 +8,7 @@
 @inject NavigationManager UriHelper
 @inject ClickSharpContext context
 @inject ClientContext client
+@inject IJSRuntime jsRuntime
 
 
 
@@ -64,7 +65,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         var httpClient = new HttpClient();
-        var ip = await httpClient.GetStringAsync("https://api.ipify.org");
+        string? ip = await jsRuntime.InvokeAsync<string>("GetAddr");
         client.Init(ip);
         await Task.Delay(500);
         await CheckIfIsAllowed();
