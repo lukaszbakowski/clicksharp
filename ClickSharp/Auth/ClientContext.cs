@@ -5,6 +5,7 @@ namespace ClickSharp.Auth
 {
     public class ClientContext
     {
+        public string? ClientIpAddr { get; private set; } = null;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ClientStore _clientStore;
         public ClientContext(IHttpContextAccessor httpContextAccessor, ClientStore clientStore)
@@ -12,8 +13,17 @@ namespace ClickSharp.Auth
             _httpContextAccessor = httpContextAccessor;
             _clientStore = clientStore;
         }
+        public void Init(string? ip)
+        {
+            ClientIpAddr = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
+            if (string.IsNullOrEmpty(ClientIpAddr))
+            {
+                ClientIpAddr = _httpContextAccessor.HttpContext?.Request.Headers["X-Forwarded-For"].ToString();
+                if (string.IsNullOrEmpty(ClientIpAddr))
+                    ClientIpAddr = ip;
+            }
+        }
 
-        public string? ClientIpAddr => _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
         public int Attempts { 
             get
             {
@@ -34,7 +44,7 @@ namespace ClickSharp.Auth
                         _clientStore.Store[ClientIpAddr]++;
                 }
             }
-        } 
+        }
 
         public bool Allow()
         {

@@ -63,7 +63,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(1000);
+        var httpClient = new HttpClient();
+        var ip = await httpClient.GetStringAsync("https://api.ipify.org");
+        client.Init(ip);
+        await Task.Delay(500);
         await CheckIfIsAllowed();
         if (_loadable == null)
             _loadable = true;
