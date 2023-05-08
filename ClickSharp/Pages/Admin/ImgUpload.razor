@@ -142,11 +142,12 @@
                     error--;
                     string fileName = $"{DateTime.Now.ToString("yyyyMMddHHmmssfffffff")}-{name}";
                     error--;
-                    await using FileStream fs = new($"{baseDirectory}\\{fileName}", FileMode.Create);
+                    var separator = Path.DirectorySeparatorChar;
+                    await using FileStream fs = new($"{baseDirectory}{separator}{fileName}", FileMode.Create);
                     error--;
                     await using var stream = file.OpenReadStream(maxFileSize);
 
-                    
+
                     //test = false;
                     //using (MemoryStream ms = new MemoryStream())
                     //{
@@ -166,10 +167,10 @@
                     //}
                     //if (test)
                     //{
-                        error--;
-                        await stream.CopyToAsync(fs);
-                        error--;
-                        images.Add(fileName, false);
+                    error--;
+                    await stream.CopyToAsync(fs);
+                    error--;
+                    images.Add(fileName, false);
                     //}
                 }
                 catch //(Exception ex)
@@ -201,7 +202,8 @@
         {
             foreach (var img in imagesToDelete)
             {
-                string path = $"{baseDirectory}\\{img}";
+                var separator = Path.DirectorySeparatorChar;
+                string path = $"{baseDirectory}{separator}{img}";
                 try
                 {
                     images.Remove(img);
