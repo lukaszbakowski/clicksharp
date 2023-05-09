@@ -15,7 +15,7 @@
 <MenuContainer2 />
 
 <h3>Add menu item</h3>
-<form>
+
     <div class="form-group">
         <label for="urlInput">Display Name</label>
         <input id="urlInput" type="text" @bind=newMenu.DisplayName class="form-control" />
@@ -31,11 +31,8 @@
         </select>
     </div>
     <div class="mt-5">
-        <button class="btn btn-primary" type="submit" @onclick=AddNewMenu>add new menu item</button>
+        <button class="btn btn-primary" type="button" @onclick=AddNewMenu>add new menu item</button>
     </div>
-</form>
-
-
 
 
 
