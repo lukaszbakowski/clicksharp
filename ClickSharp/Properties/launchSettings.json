@@ -1,15 +1,5 @@
 {
     "profiles": {
-        "Docker": {
-            "commandName": "Docker",
-            "launchBrowser": true,
-            "launchUrl": "https://localhost:443;http://localhost:80",
-            "publishAllPorts": true,
-            "useSSL": true,
-            "environmentVariables": {
-                "ASPNETCORE_ENVIRONMENT": "Production"
-            }
-        },
         "ClickSharp": {
             "commandName": "Project",
             "launchBrowser": true,
@@ -25,14 +15,24 @@
             "environmentVariables": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
+        },
+        "Docker": {
+            "commandName": "Docker",
+            "launchBrowser": true,
+            "launchUrl": "https://localhost:443;http://localhost:80",
+            "publishAllPorts": true,
+            "useSSL": true,
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "Production"
+            }
         }
     },
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:31042",
-      "sslPort": 44346
+    "iisSettings": {
+        "windowsAuthentication": false,
+        "anonymousAuthentication": true,
+        "iisExpress": {
+            "applicationUrl": "http://localhost:31042",
+            "sslPort": 44346
+        }
     }
-  }
 }
