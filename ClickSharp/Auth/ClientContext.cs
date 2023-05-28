@@ -28,6 +28,11 @@ namespace ClickSharp.Auth
             if (context == null)
                 return;
 
+            foreach(var header in context.Request.Headers)
+            {
+                Console.WriteLine(header.Key);
+            }
+
             var ipAddress = context.Connection.RemoteIpAddress?.ToString();
 
             if (string.IsNullOrEmpty(ipAddress))
