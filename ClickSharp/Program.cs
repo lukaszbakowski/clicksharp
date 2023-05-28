@@ -56,7 +56,8 @@ if (dbHost != null && dbName != null && dbPassword != null)
     connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword}";
 builder.Services.AddDbContext<ClickSharpContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    //options.UseSqlServer(connectionString);
+    options.UseSqlite(@"DataSource=Database.db;");
 });
 builder.Services.AddScoped<AuthenticationStateProvider, CustomStateProvider>();
 builder.Services.AddHttpContextAccessor();
