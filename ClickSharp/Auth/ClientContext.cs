@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using ClickSharp.Models.Auth;
+using System.Reflection.PortableExecutable;
 
 namespace ClickSharp.Auth
 {
     public class ClientContext
     {
         public string? ClientIpAddr { get; private set; } = null;
+        public string Headers { get; private set; } = string.Empty;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ClientStore _clientStore;
         public ClientContext(IHttpContextAccessor httpContextAccessor, ClientStore clientStore)
@@ -30,6 +32,7 @@ namespace ClickSharp.Auth
 
             foreach(var header in context.Request.Headers)
             {
+                Headers += $" {header.Key}";
                 Console.WriteLine(header.Key);
             }
 
