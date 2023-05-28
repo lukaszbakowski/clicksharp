@@ -59,12 +59,26 @@ namespace ClickSharp.Auth
                 try
                 {
                     var token = await _protectedSessionStorage.GetAsync<string>("Token");
+
+                    //for(var i = 100; i > 0; i--)
+                    //{
+                    //    Console.WriteLine(token.Success);
+                    //}
+
                     if (token.Success)
                     {
                         var tokenHandler = new TokenHandler();
                         string? value = token.Value?.ToString();
                         if (value != null)
                         {
+                            int count = 0;
+                            while(_clientContext.ClientIpAddr == null)
+                            {
+                                await Task.Delay(200);
+                                if (count > 10)
+                                    break;
+                                count++;
+                            }
                             if (tokenHandler.ValidateCurrentToken(value, _clientContext.ClientIpAddr))
                             {
                                 List<Claim> claims = (List<Claim>)tokenHandler.GetClaims(value);
@@ -93,9 +107,9 @@ namespace ClickSharp.Auth
                         throw new Exception("token not success");
                     }
                 }
-                catch //(Exception ex)
+                catch (Exception ex)
                 {
-                    //Console.WriteLine(ex.Message);
+                    Console.WriteLine(ex.Message);
                 }
                 ClaimsIdentity anonymous = new ClaimsIdentity();
                 return await Task.FromResult(new AuthenticationState(new ClaimsPrincipal(anonymous)));

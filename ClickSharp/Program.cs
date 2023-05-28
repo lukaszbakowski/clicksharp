@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.AspNetCore.HttpOverrides;
+using ClickSharp.Extensions;
 
 //for(int i = 60; i > 0; i--)
 //{
@@ -109,6 +110,8 @@ app.UseStaticFiles(new StaticFileOptions()
 });
 
 app.UseRouting();
+
+app.UseClientIPStore();
 
 app.UseAuthentication(); //<--
 app.UseAuthorization(); //<--

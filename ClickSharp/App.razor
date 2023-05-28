@@ -1,4 +1,6 @@
 ﻿@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ClientContext client
+@inject IJSRuntime jsRuntime
 
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
@@ -27,3 +29,13 @@
 
 
 
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        //string? ip = await jsRuntime.InvokeAsync<string>("GetAddr");
+        //client.Init(ip);
+        client.Init("123");
+        await Task.Delay(200);
+        await base.OnInitializedAsync();
+    }
+}

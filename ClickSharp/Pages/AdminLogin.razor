@@ -29,11 +29,13 @@ else if (_loadable == true)
     }
     @if (client != null)
     {
-@*        <p>
-            liczba prob:
-            @client.Attempts;
-        </p>*@
-
+        <p>
+            your IP:
+            @if(client.ClientIpAddr != null)
+            {
+                @client.ClientIpAddr
+            }
+        </p>
     }
 
     @if (_loginModel != null)
@@ -64,9 +66,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var httpClient = new HttpClient();
-        string? ip = await jsRuntime.InvokeAsync<string>("GetAddr");
-        client.Init(ip);
+        //var httpClient = new HttpClient();
         await Task.Delay(500);
         await CheckIfIsAllowed();
         if (_loadable == null)
