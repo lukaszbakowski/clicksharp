@@ -14,7 +14,7 @@ namespace ClickSharp.Auth
             _httpContextAccessor = httpContextAccessor;
             _clientStore = clientStore;
         }
-        public void Init(string? ip)
+        public async Task Init(string? ip)
         {
             //ClientIpAddr = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress?.ToString();
             //if (string.IsNullOrEmpty(ClientIpAddr))
@@ -26,27 +26,30 @@ namespace ClickSharp.Auth
             //ClientIpAddr = ip;
 
             var context = _httpContextAccessor.HttpContext;
-            if (context == null)
-                return;
+            string? ipAddress = null;
 
-            var ipAddress = context.Connection.RemoteIpAddress?.ToString();
+            if (context != null)
+            {
+                ipAddress = context.Connection.RemoteIpAddress?.ToString();
 
-            if (string.IsNullOrEmpty(ipAddress))
-                ipAddress = context.Request.Headers["HTTP_CLIENT_IP"].FirstOrDefault();
-            if (string.IsNullOrEmpty(ipAddress))
-                ipAddress = context.Request.Headers["X-FORWARDED-FOR"].FirstOrDefault();
-            if (string.IsNullOrEmpty(ipAddress))
-                ipAddress = context.Request.Headers["HTTP_X-FORWARDED-FOR"].FirstOrDefault();
-            if (string.IsNullOrEmpty(ipAddress))
-                ipAddress = context.Request.Headers["HTTP_FORWARDED-FOR"].FirstOrDefault();
-            if (string.IsNullOrEmpty(ipAddress))
-                ipAddress = context.Request.Headers["HTTP_X-CLUSTER-CLIENT-IP"].FirstOrDefault();
-            if (string.IsNullOrEmpty(ipAddress))
-                ipAddress = context.Request.Headers["HTTP_X-FORWARDED"].FirstOrDefault();
-            if (string.IsNullOrEmpty(ipAddress))
-                ipAddress = context.Request.Headers["HTTP_FORWARDED"].FirstOrDefault();
-            if (string.IsNullOrEmpty(ipAddress))
-                ipAddress = context.Request.Headers["REMOTE_ADDR"].FirstOrDefault();
+                if (string.IsNullOrEmpty(ipAddress))
+                    ipAddress = context.Request.Headers["HTTP_CLIENT_IP"].FirstOrDefault();
+                if (string.IsNullOrEmpty(ipAddress))
+                    ipAddress = context.Request.Headers["X-FORWARDED-FOR"].FirstOrDefault();
+                if (string.IsNullOrEmpty(ipAddress))
+                    ipAddress = context.Request.Headers["HTTP_X-FORWARDED-FOR"].FirstOrDefault();
+                if (string.IsNullOrEmpty(ipAddress))
+                    ipAddress = context.Request.Headers["HTTP_FORWARDED-FOR"].FirstOrDefault();
+                if (string.IsNullOrEmpty(ipAddress))
+                    ipAddress = context.Request.Headers["HTTP_X-CLUSTER-CLIENT-IP"].FirstOrDefault();
+                if (string.IsNullOrEmpty(ipAddress))
+                    ipAddress = context.Request.Headers["HTTP_X-FORWARDED"].FirstOrDefault();
+                if (string.IsNullOrEmpty(ipAddress))
+                    ipAddress = context.Request.Headers["HTTP_FORWARDED"].FirstOrDefault();
+                if (string.IsNullOrEmpty(ipAddress))
+                    ipAddress = context.Request.Headers["REMOTE_ADDR"].FirstOrDefault();
+            }
+
             if (string.IsNullOrEmpty(ipAddress))
                 ipAddress = ip;
 
@@ -60,6 +63,7 @@ namespace ClickSharp.Auth
                     //client.Init(ipAddress);
                 }
             }
+            await Task.CompletedTask;
         }
 
         public int Attempts { 
