@@ -7,7 +7,6 @@ namespace ClickSharp.Auth
     public class ClientContext
     {
         public string? ClientIpAddr { get; private set; } = null;
-        public string Headers { get; private set; } = string.Empty;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ClientStore _clientStore;
         public ClientContext(IHttpContextAccessor httpContextAccessor, ClientStore clientStore)
@@ -30,12 +29,6 @@ namespace ClickSharp.Auth
             if (context == null)
                 return;
 
-            foreach(var header in context.Request.Headers)
-            {
-                Headers += $" {header.Key}";
-                Console.WriteLine(header.Key);
-            }
-
             var ipAddress = context.Connection.RemoteIpAddress?.ToString();
 
             if (string.IsNullOrEmpty(ipAddress))
@@ -54,6 +47,8 @@ namespace ClickSharp.Auth
                 ipAddress = context.Request.Headers["HTTP_FORWARDED"].FirstOrDefault();
             if (string.IsNullOrEmpty(ipAddress))
                 ipAddress = context.Request.Headers["REMOTE_ADDR"].FirstOrDefault();
+            if (string.IsNullOrEmpty(ipAddress))
+                ipAddress = ip;
 
             if (!string.IsNullOrEmpty(ipAddress))
             {
