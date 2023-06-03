@@ -32,7 +32,7 @@
 @code {
     protected override async Task OnInitializedAsync()
     {
-        string? ip = await jsRuntime.InvokeAsync<string>("GetAddr");
+        string? ip = null; //await jsRuntime.InvokeAsync<string>("GetAddr");
         await client.Init(ip);
         //client.Init("123");
         await Task.Delay(200);

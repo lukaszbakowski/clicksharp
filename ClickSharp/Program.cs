@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.AspNetCore.HttpOverrides;
 using ClickSharp.Extensions;
+using System.Web;
 
 //for(int i = 60; i > 0; i--)
 //{
@@ -66,6 +67,9 @@ builder.Services.AddScoped<ClientContext>();
 builder.Services.AddScoped<MenuState>();
 builder.Services.AddScoped<MenuState2>();
 builder.Services.AddWorkersModule();
+builder.Services.ConfigureApplicationCookie(options => {
+    options.Cookie.SameSite = SameSiteMode.Strict;
+});
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -100,6 +104,16 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+    //context.Response.Headers.Add("Content-Security-Policy", "default-src 'self';");
+    context.Response.Headers.Add("X-Frame-Options", "DENY");
+    context.Response.Headers.Remove("X-Powered-By");
+    context.Response.Headers.Remove("Server");
+    await next();
+});
+
 app.UseHttpsRedirection();
 app.UseForwardedHeaders();
 
@@ -121,3 +135,5 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 app.Run();
+
+
