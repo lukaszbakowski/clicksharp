@@ -36,6 +36,13 @@ AppDomain.CurrentDomain.FirstChanceException += (sender, eventArgs) =>
 };
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.Host.ConfigureWebHostDefaults(webBuildier =>
+//{
+//    webBuildier.ConfigureKestrel(serverOptions =>
+//    {
+//        serverOptions.AddServerHeader = false;
+//    });
+//});
 builder.WebHost.UseWebRoot("wwwroot").UseStaticWebAssets();
 
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -60,6 +67,7 @@ builder.Services.AddDbContext<ClickSharpContext>(options =>
     //options.UseSqlServer(connectionString);
     options.UseSqlite(@"DataSource=Database.db;");
 });
+
 builder.Services.AddScoped<AuthenticationStateProvider, CustomStateProvider>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ClientStore>();
@@ -69,6 +77,10 @@ builder.Services.AddScoped<MenuState2>();
 builder.Services.AddWorkersModule();
 builder.Services.ConfigureApplicationCookie(options => {
     options.Cookie.SameSite = SameSiteMode.Strict;
+});
+builder.Services.AddAntiforgery(options =>
+{
+    options.HeaderName = "X-CSRF-TOKEN";
 });
 var app = builder.Build();
 
@@ -107,10 +119,12 @@ if (!app.Environment.IsDevelopment())
 app.Use(async (context, next) =>
 {
     context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-    //context.Response.Headers.Add("Content-Security-Policy", "default-src 'self';");
     context.Response.Headers.Add("X-Frame-Options", "DENY");
     context.Response.Headers.Remove("X-Powered-By");
     context.Response.Headers.Remove("Server");
+    context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:");
+    context.Response.Headers.Add("Referrer-Policy", "no-referrer");
+    context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
     await next();
 });
 

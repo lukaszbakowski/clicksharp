@@ -12,16 +12,14 @@
     <link href="css/site.css" rel="stylesheet" />
     <link href="ClickSharp.styles.css" rel="stylesheet" />
     <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
-    <meta http-equiv="Content-Security-Policy"
+@*    <meta http-equiv="Content-Security-Policy"
           content="base-uri 'self';
-        default-src 'self';
-        connect-src 'self' https: wss:;
-        img-src data: https:;
-        object-src 'none';
-        script-src 'self' 'unsafe-eval' https://cdn.syncfusion.com/blazor/;
-        style-src 'self' 'unsafe-inline' https://cdn.syncfusion.com/blazor/;
-        font-src 'self' data:;
-        upgrade-insecure-requests;">
+               default-src 'self';
+               img-src data: https:;
+               object-src 'none';
+               script-src 'self' 'nonce-8IBTHwOdqNKAWeKl7plt8g==';
+               style-src 'self';
+               upgrade-insecure-requests;">*@
 </head>
 <body>
     @RenderBody()
@@ -37,7 +35,7 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="_framework/blazor.server.js"></script>
+    <script src="_framework/blazor.server.js" nonce="8IBTHwOdqNKAWeKl7plt8g=="></script>
     <script src="_content/TinyMCE.Blazor/tinymce-blazor.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
     <script>
